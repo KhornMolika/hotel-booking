@@ -19,26 +19,41 @@ export function Navbar() {
   }, []);
 
   const isActive = (path: string) => location.pathname === path;
+const baseLinkClasses = `
+  relative inline-block text-sm font-medium tracking-wide
+  text-gray-700
+  transition-colors duration-300
+  hover:text-primary-1
 
-  const baseLinkClasses = "text-md font-medium transition-colors hover:text-accent text-text-dark tracking-wider";
-  const activeLinkClasses = "text-md text-accent font-bold";
+  after:content-['']
+  after:block
+  after:absolute after:left-0 after:-bottom-1
+  after:h-[2px] after:bg-primary-1
+  after:w-full
+  after:scale-x-0
+  after:origin-left
+  after:transition-transform after:duration-300 ease-out
+
+  hover:after:scale-x-100
+`;
+const activeLinkClasses = "text-primary-1 font-semibold after:scale-x-100";
 
   return (
-    <div className="fixed top-0 z-50 w-full shadow-sm">
+    <div className="fixed top-0 z-50 w-full shadow-sm " data-aos="zoom-in" data-aos-duration="1000">
       {/* Top Bar */}
       <div className="hidden lg:flex items-center justify-between px-15 py-2.5 bg-primary-2 text-white text-xs">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <Phone size={14} className="text-accent" />
-            <span>(000) 000-0000</span>
+            <span>(+855) 999293444 </span>
           </div>
           <div className="flex items-center gap-2">
             <Mail size={14} className="text-accent" />
-            <span>example@gmail.com</span>
+            <span>royalhotel4u@gmail.com</span>
           </div>
           <div className="flex items-center gap-2">
             <MapPin size={14} className="text-accent" />
-            <span>2464 Royal Ln. Mesa, New Jersey 45463</span>
+            <span>Royal Hotel Street442 Phnom Pen</span>
           </div>
         </div>
         <div className="flex items-center gap-4 text-accent">
@@ -52,10 +67,8 @@ export function Navbar() {
       {/* Main Navbar */}
       <nav className="flex items-center justify-between h-20 bg-white px-5 lg:px-15">
         <Link to="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary-1 text-white flex items-center justify-center font-serif text-xl font-bold">
-            R
-          </div>
-          <span className="font-serif text-xl font-bold text-primary-1 hidden sm:block">Royelle Hotel</span>
+        <img src="/images/nav-logo.png" alt="Royal Hotel Logo" className="w-20 h-20 object-cover " />
+          <span className="font-serif text-xl  font-bold text-primary-1 hidden sm:block">Royal Hotel</span>
         </Link>
         
         <ul className="hidden lg:flex items-center justify-center gap-8">
