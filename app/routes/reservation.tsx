@@ -25,12 +25,46 @@ export default function Reservation() {
     checkIn: "",
     checkOut: "",
     adult: "",
-    roomType: "",
+    roomType: "Standard Room",
   });
 
   const [showReceipt, setShowReceipt] = useState(false);
 
-  const roomPrice = 150;
+  const rooms = {
+    "Standard Room": {
+      title: "Standard Room",
+      category: "Luxury Room",
+      price: 150,
+      image1: "/images/home/rd1-img1.jpg",
+      image2: "/images/home/rd1-img2.jpg",
+      image3: "/images/home/rd1-img3.jpg",
+      image4: "/images/home/rd1-img4.jpg",
+      bed: "1 Bed",
+      bath: "1 Bath",
+      size: "300 sqft",
+      guests: "2 Guests",
+      overview:
+        "Enjoy a comfortable stay in our Standard Room, designed with modern amenities, elegant decor, and a relaxing atmosphere for couples or solo travelers.",
+    },
+    "Family Room": {
+      title: "Family Room",
+      category: "Family Suite",
+      price: 250,
+      image1: "/images/home/fr1.png",
+      image2: "/images/home/fr2.png",
+      image3: "/images/home/fr3.png",
+      image4: "/images/home/fr4.png",
+      bed: "2 Beds",
+      bath: "2 Baths",
+      size: "500 sqft",
+      guests: "4 Guests",
+      overview:
+        "Our Family Room is perfect for families or groups, offering more space, extra beds, and a comfortable environment for a relaxing stay together.",
+    },
+  };
+
+  const selectedRoom =
+    rooms[formData.roomType as keyof typeof rooms] || rooms["Standard Room"];
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -95,8 +129,8 @@ export default function Reservation() {
             {/* Main Image */}
             <div className="lg:col-span-3 overflow-hidden rounded-2xl group">
               <img
-                src="/images/home/rd1-img1.jpg"
-                alt="Luxury Room"
+                src={selectedRoom.image1}
+                alt={selectedRoom.title}
                 className="w-full h-[300px] lg:h-[500px] object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
@@ -104,19 +138,19 @@ export default function Reservation() {
             {/* Side Images */}
             <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
               <img
-                src="/images/home/rd1-img2.jpg"
+                src={selectedRoom.image2}
                 alt="Room Detail"
                 className="w-full h-[160px] lg:h-[156px] object-cover rounded-2xl hover:opacity-90 transition"
               />
 
               <img
-                src="/images/home/rd1-img3.jpg"
+                src={selectedRoom.image3}
                 alt="Bathroom"
                 className="w-full h-[160px] lg:h-[156px] object-cover rounded-2xl hover:opacity-90 transition"
               />
 
               <img
-                src="/images/home/rd1-img4.jpg"
+                src={selectedRoom.image4}
                 alt="Room View"
                 className="w-full h-[160px] lg:h-[156px] object-cover rounded-2xl hover:opacity-90 transition col-span-2 lg:col-span-1"
               />
@@ -131,11 +165,11 @@ export default function Reservation() {
                 <div className="flex flex-wrap items-center justify-between mb-4 gap-4">
                   <div className="flex items-center gap-4">
                     <h2 className="text-3xl font-serif font-bold text-primary-2">
-                      Standard Rooms
+                      {selectedRoom.title}
                     </h2>
 
                     <span className="bg-primary-1 text-white text-xs font-medium px-4 py-1.5 rounded-full hidden sm:block">
-                      Luxury Rooms
+                      {selectedRoom.category}
                     </span>
                   </div>
 
@@ -156,7 +190,7 @@ export default function Reservation() {
 
                 <div className="flex items-baseline gap-1 mb-8">
                   <span className="text-3xl font-serif font-bold text-primary-2">
-                    $150
+                    ${selectedRoom.price}
                   </span>
 
                   <span className="text-text-light">/ night</span>
@@ -167,22 +201,22 @@ export default function Reservation() {
                 <div className="flex flex-wrap items-center gap-8 text-sm text-text-dark font-medium">
                   <div className="flex items-center gap-2">
                     <BedDouble className="w-5 h-5 text-accent" />
-                    1 Bed
+                    {selectedRoom.bed}
                   </div>
 
                   <div className="flex items-center gap-2">
                     <Bath className="w-5 h-5 text-accent" />
-                    1 Bath
+                    {selectedRoom.bath}
                   </div>
 
                   <div className="flex items-center gap-2">
                     <Maximize className="w-5 h-5 text-accent" />
-                    300 sqft
+                    {selectedRoom.size}
                   </div>
 
                   <div className="flex items-center gap-2">
                     <Users className="w-5 h-5 text-accent" />
-                    2 Guests
+                    {selectedRoom.guests}
                   </div>
                 </div>
               </div>
@@ -194,8 +228,7 @@ export default function Reservation() {
                 </h3>
 
                 <p className="text-text-light leading-relaxed">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  {selectedRoom.overview}
                 </p>
               </div>
 
@@ -247,7 +280,9 @@ export default function Reservation() {
                 <div className="flex flex-col md:flex-row gap-10">
                   {/* Check In */}
                   <div className="flex-1">
-                    <h4 className="font-bold text-text-dark mb-4">Check In</h4>
+                    <h4 className="font-bold text-text-dark mb-4">
+                      Check In
+                    </h4>
 
                     <ul className="space-y-3">
                       <li className="flex items-center gap-3 text-text-light">
@@ -269,7 +304,9 @@ export default function Reservation() {
 
                   {/* Check Out */}
                   <div className="flex-1">
-                    <h4 className="font-bold text-text-dark mb-4">Check Out</h4>
+                    <h4 className="font-bold text-text-dark mb-4">
+                      Check Out
+                    </h4>
 
                     <ul className="space-y-3">
                       <li className="flex items-center gap-3 text-text-light">
@@ -348,7 +385,6 @@ export default function Reservation() {
                     onChange={handleChange}
                     className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
                   >
-                    <option value="">Room Type</option>
                     <option value="Standard Room">Standard Room</option>
                     <option value="Family Room">Family Room</option>
                   </select>
@@ -372,6 +408,7 @@ export default function Reservation() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4 print:bg-white">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 relative print:shadow-none print:rounded-none">
             <button
+              type="button"
               onClick={() => setShowReceipt(false)}
               className="absolute top-4 right-4 text-gray-500 hover:text-red-500 print:hidden"
             >
@@ -400,7 +437,7 @@ export default function Reservation() {
 
                 <div className="flex justify-between">
                   <span className="font-semibold">Room Type:</span>
-                  <span>{formData.roomType}</span>
+                  <span>{selectedRoom.title}</span>
                 </div>
 
                 <div className="flex justify-between">
@@ -422,12 +459,12 @@ export default function Reservation() {
               <div className="mt-5 space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span>Room Price:</span>
-                  <span>${roomPrice} / night</span>
+                  <span>${selectedRoom.price} / night</span>
                 </div>
 
                 <div className="flex justify-between text-lg font-bold text-primary-2">
                   <span>Total:</span>
-                  <span>${roomPrice}</span>
+                  <span>${selectedRoom.price}</span>
                 </div>
               </div>
 
@@ -437,6 +474,7 @@ export default function Reservation() {
             </div>
 
             <button
+              type="button"
               onClick={handlePrintReceipt}
               className="w-full mt-6 bg-primary-1 text-white py-3 rounded-xl font-bold hover:bg-primary-2 transition print:hidden"
             >
