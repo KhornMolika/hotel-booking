@@ -43,7 +43,6 @@ jobs:
 
             docker run -d \
               --name react-frontend \
-              --restart unless-stopped \
               -p 3000:80 \
               $IMAGE_NAME:latest
               
