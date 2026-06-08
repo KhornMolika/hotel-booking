@@ -33,3 +33,22 @@ h1, h2, h3, h4, h5, h6 {
 main {
   overflow: hidden;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #receipt,
+  #receipt * {
+    visibility: visible;
+  }
+
+  #receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 30px;
+  }
+}

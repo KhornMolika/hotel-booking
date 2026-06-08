@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -14,9 +15,54 @@ import {
   Volume2,
   Coffee,
   CheckCircle2,
+  X,
 } from "lucide-react";
 
 export default function Reservation() {
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    checkIn: "",
+    checkOut: "",
+    adult: "",
+    roomType: "",
+  });
+
+  const [showReceipt, setShowReceipt] = useState(false);
+
+  const roomPrice = 150;
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleBookNow = () => {
+    if (
+      !formData.name ||
+      !formData.phone ||
+      !formData.checkIn ||
+      !formData.checkOut ||
+      !formData.adult ||
+      !formData.roomType
+    ) {
+      alert("Please fill all booking information.");
+      return;
+    }
+
+    setShowReceipt(true);
+  };
+
+  const handlePrintReceipt = () => {
+    window.print();
+  };
+
   return (
     <>
       <header>
@@ -201,9 +247,7 @@ export default function Reservation() {
                 <div className="flex flex-col md:flex-row gap-10">
                   {/* Check In */}
                   <div className="flex-1">
-                    <h4 className="font-bold text-text-dark mb-4">
-                      Check In
-                    </h4>
+                    <h4 className="font-bold text-text-dark mb-4">Check In</h4>
 
                     <ul className="space-y-3">
                       <li className="flex items-center gap-3 text-text-light">
@@ -225,9 +269,7 @@ export default function Reservation() {
 
                   {/* Check Out */}
                   <div className="flex-1">
-                    <h4 className="font-bold text-text-dark mb-4">
-                      Check Out
-                    </h4>
+                    <h4 className="font-bold text-text-dark mb-4">Check Out</h4>
 
                     <ul className="space-y-3">
                       <li className="flex items-center gap-3 text-text-light">
@@ -255,42 +297,65 @@ export default function Reservation() {
                 <form className="space-y-5">
                   <input
                     type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     placeholder="Your Name"
                     className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
                   />
 
                   <input
                     type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
                     placeholder="Phone Number"
                     className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
                   />
 
                   <input
                     type="date"
+                    name="checkIn"
+                    value={formData.checkIn}
+                    onChange={handleChange}
                     className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
                   />
 
                   <input
                     type="date"
+                    name="checkOut"
+                    value={formData.checkOut}
+                    onChange={handleChange}
                     className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
                   />
 
-                  <select className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50">
-                    <option>Adult</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4+</option>
+                  <select
+                    name="adult"
+                    value={formData.adult}
+                    onChange={handleChange}
+                    className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
+                  >
+                    <option value="">Adult</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4+">4+</option>
                   </select>
 
-                  <select className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50">
-                    <option>Room Type</option>
-                    <option>Standard Room</option>
-                    <option>Family Room</option>
+                  <select
+                    name="roomType"
+                    value={formData.roomType}
+                    onChange={handleChange}
+                    className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
+                  >
+                    <option value="">Room Type</option>
+                    <option value="Standard Room">Standard Room</option>
+                    <option value="Family Room">Family Room</option>
                   </select>
 
                   <button
                     type="button"
+                    onClick={handleBookNow}
                     className="w-full mt-4 bg-primary-1 text-white py-4 rounded-xl text-base font-bold hover:bg-primary-2 transition"
                   >
                     Book Now
@@ -301,6 +366,85 @@ export default function Reservation() {
           </div>
         </section>
       </main>
+
+      {/* Receipt Modal */}
+      {showReceipt && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4 print:bg-white">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 relative print:shadow-none print:rounded-none">
+            <button
+              onClick={() => setShowReceipt(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-red-500 print:hidden"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div id="receipt" className="text-text-dark">
+              <h2 className="text-3xl font-serif font-bold text-primary-2 text-center mb-2">
+                Booking Receipt
+              </h2>
+
+              <p className="text-center text-text-light text-sm mb-6">
+                Thank you for your booking
+              </p>
+
+              <div className="border-t border-b border-gray-200 py-4 space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="font-semibold">Customer Name:</span>
+                  <span>{formData.name}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="font-semibold">Phone:</span>
+                  <span>{formData.phone}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="font-semibold">Room Type:</span>
+                  <span>{formData.roomType}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="font-semibold">Check In:</span>
+                  <span>{formData.checkIn}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="font-semibold">Check Out:</span>
+                  <span>{formData.checkOut}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="font-semibold">Adults:</span>
+                  <span>{formData.adult}</span>
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span>Room Price:</span>
+                  <span>${roomPrice} / night</span>
+                </div>
+
+                <div className="flex justify-between text-lg font-bold text-primary-2">
+                  <span>Total:</span>
+                  <span>${roomPrice}</span>
+                </div>
+              </div>
+
+              <p className="text-center text-xs text-text-light mt-6">
+                Please show this receipt when checking in.
+              </p>
+            </div>
+
+            <button
+              onClick={handlePrintReceipt}
+              className="w-full mt-6 bg-primary-1 text-white py-3 rounded-xl font-bold hover:bg-primary-2 transition print:hidden"
+            >
+              Print Receipt
+            </button>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </>
