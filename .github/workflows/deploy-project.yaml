@@ -45,7 +45,7 @@ jobs:
               --name react-frontend \
               --network web \
               -l traefik.enable=true \
-              -l traefik.http.routers.react.rule=Host(\`hotel-booking.molika.app\`) \
+              -l traefik.http.routers.react.rule='Host(`hotel-booking.molika.app`)'
               -l traefik.http.routers.react.entrypoints=websecure \
               -l traefik.http.routers.react.tls.certresolver=le \
               $IMAGE_NAME:latest
