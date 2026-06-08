@@ -38,11 +38,6 @@ jobs:
           script: |
             docker pull $IMAGE_NAME:latest
 
-            docker stop react-frontend >/dev/null 2>&1 || true
-            docker rm react-frontend >/dev/null 2>&1 || true
 
-            docker run -d \
-              --name react-frontend \
-              -p 3000:80 \
-              $IMAGE_NAME:latest
+            docker run -d --name react-frontend -p 3000:80 $IMAGE_NAME:latest
               
