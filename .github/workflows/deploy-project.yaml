@@ -1,0 +1,47 @@
+name: Deploy React App
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: ${{ secrets.DOCKER_IMAGE }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login \
+            -u "${{ secrets.DOCKERHUB_USERNAME }}" \
+            --password-stdin
+
+      - name: Build Image
+        run: |
+          docker build -t $IMAGE_NAME:latest .
+
+      - name: Push Image
+        run: |
+          docker push $IMAGE_NAME:latest
+
+      - name: Deploy Server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker pull $IMAGE_NAME:latest
+
+            docker rm -f react-frontend || true
+
+            docker run -d \
+              --name react-frontend \
+              --restart unless-stopped \
+              -p 3000:80 \
+              $IMAGE_NAME:latest
