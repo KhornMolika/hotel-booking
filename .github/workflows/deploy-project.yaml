@@ -37,6 +37,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/hotel-booking
+
             docker pull $IMAGE_NAME:latest
 
             docker rm -f react-frontend || true
@@ -45,8 +46,7 @@ jobs:
               --name react-frontend \
               --network web \
               -l traefik.enable=true \
-              -l traefik.http.routers.react.rule='Host(`hotel-booking.molika.app`)'
+              -l traefik.http.routers.react.rule="Host(\`hotel-booking.molika.app\`)" \
               -l traefik.http.routers.react.entrypoints=websecure \
               -l traefik.http.routers.react.tls.certresolver=le \
               $IMAGE_NAME:latest
-              
