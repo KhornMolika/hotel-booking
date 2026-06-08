@@ -15,11 +15,11 @@ export default function SignUp() {
 
           <form className="space-y-5">
             <div>
-              <label htmlFor="email" className="mb-2 block text-sm font-medium text-text-dark">Email</label>
+              <label htmlFor="phone" className="mb-2 block text-sm font-medium text-text-dark">Phone Number</label>
               <input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
+                id="phone"
+                type="tel"
+                placeholder="Enter your phone number"
                 className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-text-dark outline-none transition focus:border-primary-1"
               />
             </div>
