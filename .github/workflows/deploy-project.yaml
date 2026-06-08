@@ -36,8 +36,14 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/hotel-booking
+
             docker pull $IMAGE_NAME:latest
 
+            docker rm -f react-frontend || true
 
-            docker run -d --name react-frontend -p 3000:80 $IMAGE_NAME:latest
+            docker run -d \
+              --name react-frontend \
+              -p 3000:80 \
+              $IMAGE_NAME:latest
               
