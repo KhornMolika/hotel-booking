@@ -571,7 +571,140 @@ export default function Home() {
             <Testimonials />
           </div>
         </section>
+{/* Section 7 Discount Season Hotel */}
+<section className="py-20 px-5 lg:px-15 bg-secondary">
+  <div className="max-w-7xl mx-auto">
+    <div
+      className="max-w-3xl mx-auto text-center mb-16"
+      data-aos="fade-down"
+      data-aos-duration="500"
+    >
+      <p className="text-accent uppercase tracking-widest text-sm font-semibold mb-4">
+        Special Offers
+      </p>
 
+      <h1 className="text-4xl lg:text-5xl font-serif font-bold text-primary-2 mb-6">
+        Discount Season Hotel
+      </h1>
+
+      <p className="text-text-light leading-relaxed text-lg">
+        Enjoy our seasonal hotel discounts and special packages for your next
+        relaxing stay.
+      </p>
+    </div>
+
+    <div
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      data-aos="fade-up"
+      data-aos-duration="500"
+    >
+      {/* Discount Card 1 */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
+        <div className="overflow-hidden h-60">
+          <img
+            src="/images/home/s3-image1.jpg"
+            alt="Summer Discount"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-serif text-2xl font-bold text-text-dark">
+              Summer Escape
+            </h3>
+
+            <span className="bg-accent text-white text-sm font-bold px-4 py-1 rounded-full">
+              20% OFF
+            </span>
+          </div>
+
+          <p className="text-text-light text-sm leading-relaxed mb-4">
+            Get a special summer discount for Standard Room and enjoy a
+            comfortable stay with modern amenities.
+          </p>
+
+          <p className="text-primary-1 font-bold">
+            From $120{" "}
+            <span className="text-sm font-normal text-text-light">
+              / night
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* Discount Card 2 */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
+        <div className="overflow-hidden h-60">
+          <img
+            src="/images/home/s3-image2.jpg"
+            alt="Family Discount"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-serif text-2xl font-bold text-text-dark">
+              Family Holiday
+            </h3>
+
+            <span className="bg-accent text-white text-sm font-bold px-4 py-1 rounded-full">
+              15% OFF
+            </span>
+          </div>
+
+          <p className="text-text-light text-sm leading-relaxed mb-4">
+            Perfect for family trips with more space, extra beds, and a peaceful
+            hotel experience.
+          </p>
+
+          <p className="text-primary-1 font-bold">
+            From $212{" "}
+            <span className="text-sm font-normal text-text-light">
+              / night
+            </span>
+          </p>
+        </div>
+      </div>
+
+      {/* Discount Card 3 */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
+        <div className="overflow-hidden h-60">
+          <img
+            src="/images/home/s3-image3.jpg"
+            alt="Weekend Discount"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-serif text-2xl font-bold text-text-dark">
+              Weekend Deal
+            </h3>
+
+            <span className="bg-accent text-white text-sm font-bold px-4 py-1 rounded-full">
+              10% OFF
+            </span>
+          </div>
+
+          <p className="text-text-light text-sm leading-relaxed mb-4">
+            Book your weekend stay and enjoy a relaxing short getaway with a
+            special price.
+          </p>
+
+          <p className="text-primary-1 font-bold">
+            From $135{" "}
+            <span className="text-sm font-normal text-text-light">
+              / night
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
         {/* Section 7 Events */}
         <section className="py-20 px-5 lg:px-15 bg-white">
           <div className="max-w-7xl mx-auto">
