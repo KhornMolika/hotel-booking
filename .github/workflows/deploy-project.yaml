@@ -45,3 +45,4 @@ jobs:
               --restart unless-stopped \
               -p 3000:80 \
               $IMAGE_NAME:latest
+              
