@@ -1,4 +1,4 @@
-# Voco Hotel Reservation System
+# Hotel Reservation System
 
 Welcome to the Voco Hotel frontend application! This project is a modern, fast, and responsive React application built with **React Router v7** and styled with **Tailwind CSS v4**.
 

@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: ${{ secrets.DOCKER_IMAGE }}
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/hotel-booking
 
 jobs:
   deploy:
@@ -14,6 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Login Docker Hub
         run: |
@@ -36,12 +38,18 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull $IMAGE_NAME:latest
+            IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/hotel-booking
 
-            docker rm -f react-frontend || true
+            sudo docker pull $IMAGE_NAME:latest
 
-            docker run -d \
+            sudo docker rm -f react-frontend || true
+
+            sudo docker run -d \
               --name react-frontend \
-              --restart unless-stopped \
-              -p 3000:80 \
+              --network web \
+              -l traefik.enable=true \
+              -l traefik.http.routers.react.rule="Host(\`hotel-booking.molika.app\`)" \
+              -l traefik.http.routers.react.entrypoints=websecure \
+              -l traefik.http.routers.react.tls.certresolver=le \
+              -l traefik.http.services.react.loadbalancer.server.port=3000 \
               $IMAGE_NAME:latest
