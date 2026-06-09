@@ -178,3 +178,21 @@ html.dark [class*="text-text-light"] {
 html.dark [class*="text-primary-2"] {
   color: #e5e7eb;
 }
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #receipt,
+  #receipt * {
+    visibility: visible;
+  }
+
+  #receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 30px;
+  }
+}
