@@ -1,0 +1,310 @@
+NOTE : This is Where and what i have changed 
+
+Changes Made to Home Page
+1. Enhanced Check Availability Form
+Added hover animation to the form container.
+Increased spacing between form elements (gap-6 → gap-7).
+Added focus ring effects on inputs and selects.
+Added hover border effects.
+Added button shadow and active-click animation.
+2. Redesigned Welcome Section
+Original
+Used two static images:
+s2-image2.avif
+s2-image3.jpg
+Simple "Welcome!" heading and description.
+Modified
+Replaced static images with a Swiper slideshow.
+
+Added:
+
+Swiper
+SwiperSlide
+Autoplay
+EffectFade
+Added automatic image transitions.
+
+Updated section title to:
+
+Welcome to Our Hotel
+Experience True Comfort & Luxury
+Updated description and layout styling.
+3. Added Swiper Dependencies
+
+Added imports:
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, EffectFade } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-fade";
+
+Purpose:
+
+Support image slideshow in Welcome section.
+4. Improved Main Page Animation
+
+Added:
+
+<main data-aos="zoom-in" data-aos-duration="2000">
+
+Purpose:
+
+Apply AOS animation when page loads.
+5. Redesigned Restaurant Menu Section
+Original
+Text-only menu items.
+Modified
+Converted menu items into image cards.
+Added:
+Food images
+Card hover effects
+Better visual layout
+Image + title + price + description structure
+
+Purpose:
+
+Improve UI and user experience.
+6. Replaced Testimonials Component
+Original
+<Testimonials />
+Modified
+Removed component usage.
+Created custom testimonial cards using array mapping.
+
+Added:
+
+Customer image
+Customer role
+Review title
+Review text
+
+Purpose:
+
+More customization and easier styling.
+7. Removed Events Section
+
+Removed:
+
+{/* Section 7 Events */}
+
+Including:
+
+Event cards
+Event images
+Event descriptions
+
+Purpose:
+
+Simplify homepage layout.
+8. Added Additional Hover Effects
+
+Added hover interactions to:
+
+Form container
+Buttons
+Menu cards
+Food cards
+
+Examples:
+
+hover:scale-[1.02]
+hover:-translate-y-0.5
+hover:shadow-lg
+active:scale-95
+Notes for Conflict Prevention
+Replaced static image layout with Swiper slider to avoid image positioning conflicts.
+Kept existing activeMenu state logic unchanged to prevent menu functionality issues.
+Removed dependency on the Testimonials component by using local data.
+Deleted Events section to reduce component complexity.
+Cleanup Required
+
+Remove unused import:
+
+import { Testimonials } from "../components/Testimonials";
+
+because the component is no longer used.
+
+This is the kind of note I would put in a Git commit, PR description, or team update.
+
+just give me only note 
+Notes of Changes Made
+Added Swiper slider functionality in the Welcome section.
+Added Swiper imports (Swiper, SwiperSlide, Autoplay, EffectFade) and CSS files.
+Replaced static Welcome section images with an auto-playing image slideshow.
+Updated Welcome section title, description, and layout design.
+Added AOS animation to the main page container.
+Enhanced Check Availability form styling with hover, focus, shadow, and transition effects.
+Increased spacing and improved responsiveness in the booking form.
+Redesigned Restaurant Menu from text-based items to image card-based menu items.
+Added food images and hover effects to menu cards.
+Replaced the Testimonials component with custom testimonial cards using local data.
+Removed the Events section from the homepage.
+Added additional hover animations and visual effects across multiple sections.
+Improved overall UI/UX consistency and modernized the homepage design.
+Kept existing menu state logic (activeMenu) unchanged to avoid functionality conflicts.
+Left an unused Testimonials import that can be removed during cleanup.
+i dont like this just say original code look like this 
+then tell waht i change to . what i chagen for Pls note the line code number too
+
+Sure. A note like this is usually clearer for lecturers/team members:
+
+1. Welcome Section
+
+Original Code
+
+Used two static images:
+
+<img src="/images/home/s2-image2.avif" />
+<img src="/images/home/s2-image3.jpg" />
+
+Changed To
+
+Replaced with Swiper slideshow:
+
+<Swiper>
+  <SwiperSlide>...</SwiperSlide>
+</Swiper>
+
+Location
+
+Around Section 2 Welcome.
+Original: ~Lines 90–120
+Modified: ~Lines 160–210
+2. Added Swiper Dependencies
+
+Original Code
+
+No Swiper import
+
+Changed To
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, EffectFade } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-fade";
+
+Location
+
+Top of file (~Lines 7–10)
+3. Main Container Animation
+
+Original Code
+
+<main>
+
+Changed To
+
+<main data-aos="zoom-in" data-aos-duration="2000">
+
+Location
+
+Around Line 25
+4. Check Availability Form Styling
+
+Original Code
+
+gap-6
+transition-colors
+
+Changed To
+
+gap-7
+hover:scale-[1.02]
+hover:shadow-2xl
+focus:ring-2
+hover:border-primary-1/40
+
+Location
+
+Booking Form Section
+Around Lines 40–140
+5. Restaurant Menu Section
+
+Original Code
+
+Price
+Title
+Description
+
+(Text-only menu layout)
+
+Changed To
+
+<img src="..." />
+Price
+Title
+Description
+
+(Card layout with images)
+
+Location
+
+Section 5 Restaurant Menu
+Around Lines 300–500
+6. Testimonials Section
+
+Original Code
+
+<Testimonials />
+
+Changed To
+
+[
+  { name: "...", role: "..."}
+].map(...)
+
+(Custom testimonial cards)
+
+Location
+
+Section 6 Testimonials
+Around Lines 530–620
+7. Events Section
+
+Original Code
+
+{/* Section 7 Events */}
+
+with 3 event cards.
+
+Changed To
+
+Removed completely
+
+Location
+
+Original file around Lines 320–420
+8. Welcome Content
+
+Original Code
+
+Welcome!
+Nestled in a serene corner of the world...
+
+Changed To
+
+Welcome to Our Hotel
+Experience True Comfort & Luxury
+
+Location
+
+Section 2 Welcome
+Around Lines 150–180
+9. Added Hover Effects
+
+Original Code
+
+Basic buttons and cards
+
+Changed To
+
+hover:scale-[1.02]
+hover:-translate-y-0.5
+hover:shadow-lg
+active:scale-95
+
+Location
+
+Booking Form
+Restaurant Cards
+Buttons throughout the page
