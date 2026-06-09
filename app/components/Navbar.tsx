@@ -74,9 +74,7 @@ export function Navbar() {
 
   return (
     <div
-      className="fixed top-0 z-50 w-full shadow-sm "
-      data-aos="zoom-in"
-      data-aos-duration="1000"
+      className="fixed top-0 z-50 w-full shadow-sm bg-white"
     >
       {/* Top Bar */}
       <div className="hidden lg:flex items-center justify-between px-15 py-2.5 bg-primary-2 text-white text-xs">

@@ -1,15 +1,15 @@
 import { Link } from "react-router";
-import { Navbar } from "../components/Navbar";
+import { ArrowLeft } from "lucide-react";
 import googleLogo from "../../public/images/logo/google-logo.svg";
 
 export default function SignUp() {
   return (
     <>
-      <header>
-        <Navbar />
-      </header>
+      <Link to="/" className="fixed top-8 left-8 sm:top-10 sm:left-10 z-50 flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-md text-primary-1 hover:bg-primary-1 hover:text-white transition-all duration-300">
+        <ArrowLeft className="w-6 h-6" />
+      </Link>
 
-      <main style={{ fontFamily: "var(--font-sans)" }} className="min-h-screen flex items-center justify-center pt-33 pb-4 bg-secondary px-5 font-sans">
+      <main style={{ fontFamily: "var(--font-sans)" }} className="min-h-screen flex items-center justify-center py-10 bg-secondary px-5 font-sans relative">
         <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl">
           <h1 className="text-3xl font-sans font-bold text-primary-1 mb-2" style={{ fontFamily: "var(--font-sans)" }}>Sign Up</h1>
           <p className="mb-8 text-text-light font-sans">Create your account to start booking and managing reservations.</p>

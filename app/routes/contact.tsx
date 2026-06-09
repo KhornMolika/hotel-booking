@@ -9,7 +9,7 @@ export default function Contact() {
       <header>
         <Navbar />
       </header>
-      <main className="mt-29">
+      <main className="mt-[116px] min-h-[calc(100vh-116px)]">
         {/* Hero Section */}
         <section className="bg-[url('/images/hero.jpg')] bg-cover bg-no-repeat bg-center bg-fixed h-[calc(100vh-116px)]">
           <div className="bg-black/45 h-full">
@@ -32,7 +32,7 @@ export default function Contact() {
         <section className="py-20 px-8 lg:px-16 flex flex-col lg:flex-row gap-12 bg-whitesmoke justify-center items-center lg:items-start max-w-7xl mx-auto">
           <div
             className="flex-1 max-w-md w-full"
-            data-aos="fade-right"
+            data-aos="fade"
             data-aos-duration="300"
           >
             <h2 className="text-3xl mb-10 text-text-dark">
@@ -67,7 +67,7 @@ export default function Contact() {
 
           <div
             className="flex-1 max-w-2xl w-full bg-white p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
-            data-aos="fade-left"
+            data-aos="fade"
             data-aos-duration="300"
           >
             <form className="flex flex-col gap-5">

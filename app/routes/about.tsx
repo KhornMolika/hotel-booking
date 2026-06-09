@@ -17,7 +17,7 @@ export default function About() {
       <header>
         <Navbar />
       </header>
-      <main className="mt-29">
+      <main className="mt-[116px] min-h-[calc(100vh-116px)]">
         {/* Hero Section */}
         <section className="bg-[url('/images/hero.jpg')] bg-cover bg-no-repeat bg-center bg-fixed h-[calc(100vh-116px)]">
           <div className="bg-black/45 h-full">
@@ -36,7 +36,7 @@ export default function About() {
 
         {/* Section 2 Welcome! */}
         <section className="flex flex-col lg:flex-row items-center justify-center lg:justify-between py-20 px-8 lg:px-16 max-w-7xl mx-auto bg-white gap-10 lg:gap-0 overflow-hidden">
-          <div className="w-full lg:w-1/2 text-center lg:text-left pr-0 lg:pr-20" data-aos="fade-right" data-aos-duration="300">
+          <div className="w-full lg:w-1/2 text-center lg:text-left pr-0 lg:pr-20" data-aos="fade" data-aos-duration="300">
             <h1 className="text-5xl mb-5">Welcome!</h1>
             <p className="text-sm text-light-black leading-relaxed mb-5">
               Nestled in a serene corner of the world, our hotel offers a perfect
@@ -50,7 +50,7 @@ export default function About() {
               <p className="text-primary-1 mb-0 flex items-center"><span className="text-sm mr-3.5 text-light-black">or</span>SEE VIDEO</p>
             </div>
           </div>
-          <div className="relative mt-10 lg:mt-0 w-full lg:w-auto" data-aos="fade-left" data-aos-duration="300">
+          <div className="relative mt-10 lg:mt-0 w-full lg:w-auto" data-aos="fade" data-aos-duration="300">
             <img src="/images/s2-image" alt="image 1" className="w-full lg:max-w-lg h-72 lg:h-96 rounded-xl object-cover md:object-[-60px] lg:object-center shadow-xl" />
             <img src="/images/s2-image3.jpg" alt="image 2" className="w-36 lg:w-48 h-36 lg:h-48 rounded-full border-4 border-white shadow-lg absolute bottom-[-50px] lg:bottom-[-70px] right-1/2 lg:right-[-70px] translate-x-1/4 lg:translate-x-0 object-cover" />
           </div>
@@ -58,8 +58,8 @@ export default function About() {
 
         {/* Section 3 Leadership */}
         <section className="flex flex-col items-center justify-between py-20 px-16 bg-white/80">
-          <h1 className="text-center text-5xl mt-0 mb-10" data-aos="fade-down" data-aos-duration="300">Leadership</h1>
-          <div className="flex flex-row flex-wrap justify-around lg:justify-between items-center gap-5 mb-7 w-full max-w-250" data-aos="zoom-in" data-aos-duration="300">
+          <h1 className="text-center text-5xl mt-0 mb-10" data-aos="fade" data-aos-duration="300">Leadership</h1>
+          <div className="flex flex-row flex-wrap justify-around lg:justify-between items-center gap-5 mb-7 w-full max-w-250" data-aos="fade" data-aos-duration="300">
             
             <div className="w-70 h-96 perspective-[1000px] group">
               <div className="w-full h-full relative transition-transform duration-1000 transform-style-preserve-3d group-hover:rotate-y-180">
@@ -141,7 +141,7 @@ export default function About() {
 
         {/* Section 4 Photos */}
         <section className="px-8 lg:px-16 pb-24 flex flex-col items-center bg-white">
-          <div className="pt-20 px-4 max-w-3xl pb-5 flex flex-col items-center text-center" data-aos="fade-right" data-aos-duration="300">
+          <div className="pt-20 px-4 max-w-3xl pb-5 flex flex-col items-center text-center" data-aos="fade" data-aos-duration="300">
             <h1 className="text-4xl lg:text-5xl font-serif font-bold text-primary-2 mb-5">Photos Gallery</h1>
             <p className="text-base leading-relaxed mb-5">
               Explore the beauty of our hotel through stunning images that capture
@@ -154,10 +154,10 @@ export default function About() {
         </section>
 
         {/* Section 5 History */}
-        <section className="w-full grid place-items-center py-16 px-5 lg:px-16 pb-24 bg-white/80" data-aos="fade-down" data-aos-duration="300">
+        <section className="w-full grid place-items-center py-16 px-5 lg:px-16 pb-24 bg-white/80" data-aos="fade" data-aos-duration="300">
           <h1 className="text-5xl mb-24 relative after:absolute after:content-[''] after:w-1/2 after:h-1 after:left-1/2 after:bottom-[-5px] after:bg-gradient-to-r after:from-secondary after:to-primary-1 after:-translate-x-1/2">History</h1>
           
-          <div className="w-[95%] lg:w-[85%] relative after:absolute after:content-[''] after:w-0.5 after:h-full after:left-0 lg:after:left-1/2 after:top-[100%] lg:after:top-1/2 after:bg-gradient-to-b after:from-primary-2 after:to-primary-1 after:-translate-y-full lg:after:-translate-y-1/2 after:-z-10" data-aos="zoom-in" data-aos-duration="300">
+          <div className="w-[95%] lg:w-[85%] relative after:absolute after:content-[''] after:w-0.5 after:h-full after:left-0 lg:after:left-1/2 after:top-[100%] lg:after:top-1/2 after:bg-gradient-to-b after:from-primary-2 after:to-primary-1 after:-translate-y-full lg:after:-translate-y-1/2 after:-z-10" data-aos="fade" data-aos-duration="300">
             <ul className="list-none flex flex-col w-full m-0 p-0">
               <li className="w-[90%] lg:w-1/2 h-auto py-3.5 px-5 bg-white shadow-[1px_1px_25px_rgba(0,0,0,0.384)] rounded-xl mb-10 lg:mb-5 relative lg:self-start lg:text-right translate-x-7 lg:-translate-x-7">
                 <h3 className="text-2xl font-medium text-primary-1">More Branches Worldwide</h3>
@@ -201,11 +201,11 @@ export default function About() {
         {/* Section 6 A Best Place To Stay. Reserve Now! */}
         <section className="bg-[url('/images/hero.jpg')] bg-cover bg-no-repeat bg-center bg-fixed h-72">
           <div className="bg-black/40 flex flex-col lg:flex-row items-center justify-center lg:justify-between px-16 text-white h-full gap-7 lg:gap-0 text-center lg:text-left">
-            <h2 className="text-4xl" data-aos="fade-right" data-aos-duration="300">
+            <h2 className="text-4xl" data-aos="fade" data-aos-duration="300">
               A Best Place To Stay. Reserve Now!
             </h2>
             <Link to="/reservation">
-              <button className="text-lg text-white py-3.5 px-10 bg-transparent border-2 border-white rounded-full transition-all hover:bg-primary-1 hover:border-primary-1" data-aos="fade-left" data-aos-duration="300">
+              <button className="text-lg text-white py-3.5 px-10 bg-transparent border-2 border-white rounded-full transition-all hover:bg-primary-1 hover:border-primary-1" data-aos="fade" data-aos-duration="300">
                 Reserve Now
               </button>
             </Link>
