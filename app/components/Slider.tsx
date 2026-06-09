@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ImageSkeleton } from "./ImageSkeleton";
 
 export function Slider({ images }: { images: string[] }) {
   const [active, setActive] = useState(0);
@@ -27,7 +28,11 @@ export function Slider({ images }: { images: string[] }) {
       >
         {images.map((img, i) => (
           <div className="min-w-full h-full" key={i}>
-            <img src={img} alt={`Slide ${i}`} className="object-cover object-center w-full h-full" />
+            <ImageSkeleton
+              src={img}
+              alt={`Slide ${i + 1}`}
+              className="w-full h-full object-cover"
+            />
           </div>
         ))}
       </div>

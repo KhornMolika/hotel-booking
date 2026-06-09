@@ -103,7 +103,7 @@ export default function Reservation() {
         <Navbar />
       </header>
 
-      <main className="mt-[116px] bg-whitesmoke">
+      <main className="mt-[116px] min-h-[calc(100vh-116px)] bg-whitesmoke">
         {/* Banner Section */}
         <section className="bg-[url('/images/hero.jpg')] bg-cover bg-center h-72 relative">
           <div className="absolute inset-0 bg-primary-2/70 flex flex-col items-center justify-center text-white">

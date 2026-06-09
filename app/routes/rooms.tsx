@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { Star, BedDouble, Bath, Maximize } from "lucide-react";
+import { ImageSkeleton } from "../components/ImageSkeleton";
 
 export default function Rooms() {
   const [selectedCategory, setSelectedCategory] = useState("All Rooms");
@@ -151,11 +152,11 @@ export default function Rooms() {
   }: any) => (
     <div
       className="bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2"
-      data-aos="fade-up"
+      data-aos="fade"
       data-aos-duration="500"
     >
       <div className="relative h-64">
-        <img src={img} alt={title} className="w-full h-full object-cover" />
+        <ImageSkeleton src={img} alt={title} className="w-full h-full object-cover" />
 
         <div className="absolute bottom-3.5 left-5 bg-primary-1 text-white text-xs font-medium px-4 py-1.5 rounded-full z-10 shadow-md">
           {tag}
@@ -206,7 +207,7 @@ export default function Rooms() {
         <Navbar />
       </header>
 
-      <main className="mt-29">
+      <main className="mt-[116px] min-h-[calc(100vh-116px)]">
         {/* Banner Section */}
         <section className="bg-[url('/images/hero.jpg')] bg-cover bg-no-repeat bg-center bg-fixed h-[calc(100vh-116px)] relative">
           <div className="bg-black/45 h-full">
@@ -230,7 +231,7 @@ export default function Rooms() {
         <section className="py-20 px-5 lg:px-15 flex flex-col items-center">
           <div
             className="text-center mb-10"
-            data-aos="fade-down"
+            data-aos="fade"
             data-aos-duration="500"
           >
             <p className="text-accent uppercase tracking-[0.2em] text-sm font-semibold mb-3 flex items-center justify-center gap-3">

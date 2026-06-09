@@ -5,6 +5,7 @@ import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { Slider } from "../components/Slider";
 import { Testimonials } from "../components/Testimonials";
+import { ImageSkeleton } from "../components/ImageSkeleton";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
@@ -63,9 +64,9 @@ export default function Home() {
         <Navbar />
       </header>
 
-      <main data-aos="zoom-in" data-aos-duration="2000">
+      <main className="mt-[116px] min-h-[calc(100vh-116px)]">
         {/* Hero Section */}
-        <section className="bg-[url('/images/hero.jpg')] bg-cover bg-no-repeat bg-center bg-fixed h-[calc(100vh-116px)] relative">
+        <section className="bg-[url('/images/hero.jpg')] bg-cover bg-no-repeat bg-position-[center_top_-140px] md:bg-top bg-fixed h-[calc(100vh-116px)] relative">
           <div className="bg-black/50 h-full">
             <div className="flex flex-col items-center justify-center h-full w-full text-white text-center px-5">
               <h3 className="mb-4 font-black flex items-center gap-2 text-sm lg:text-base tracking-widest text-accent uppercase">
@@ -87,125 +88,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Check Availability Form (Overlapping Hero) */}
-        <div className="max-w-6xl mx-auto px-5 relative z-20 -mt-24 lg:-mt-16 mb-20 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
-          <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-6 lg:p-8">
-            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-7 items-end">
-              {/* Check In */}
-              <div className="flex flex-col">
-                <label className="text-sm font-bold text-text-dark mb-2">
-                  Check In
-                </label>
-                <input
-                  type="date"
-                  className="
-            w-full p-3 rounded-lg text-sm
-            bg-gray-50/50 border border-gray-200
-            text-text-light
-            focus:outline-none focus:border-primary-1
-            focus:ring-2 focus:ring-primary-1/20
-            transition-all duration-300
-            hover:border-primary-1/40
-          "
-                />
-              </div>
 
-              {/* Check Out */}
-              <div className="flex flex-col">
-                <label className="text-sm font-bold text-text-dark mb-2">
-                  Check Out
-                </label>
-                <input
-                  type="date"
-                  className="
-            w-full p-3 rounded-lg text-sm
-            bg-gray-50/50 border border-gray-200
-            text-text-light
-            focus:outline-none focus:border-primary-1
-            focus:ring-2 focus:ring-primary-1/20
-            transition-all duration-300
-            hover:border-primary-1/40
-          "
-                />
-              </div>
-
-              {/* Adults */}
-              <div className="flex flex-col">
-                <label className="text-sm font-bold text-text-dark mb-2">
-                  Adults
-                </label>
-                <select
-                  className="
-            w-full p-3 rounded-lg text-sm
-            bg-gray-50/50 border border-gray-200
-            text-text-light
-            focus:outline-none focus:border-primary-1
-            focus:ring-2 focus:ring-primary-1/20
-            transition-all duration-300
-            hover:border-primary-1/40
-            appearance-none
-          "
-                >
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4+</option>
-                </select>
-              </div>
-
-              {/* Children */}
-              <div className="flex flex-col">
-                <label className="text-sm font-bold text-text-dark mb-2">
-                  Children
-                </label>
-                <select
-                  className="
-            w-full p-3 rounded-lg text-sm
-            bg-gray-50/50 border border-gray-200
-            text-text-light
-            focus:outline-none focus:border-primary-1
-            focus:ring-2 focus:ring-primary-1/20
-            transition-all duration-300
-            hover:border-primary-1/40
-            appearance-none
-          "
-                >
-                  <option>0</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4+</option>
-                </select>
-              </div>
-
-              {/* Button */}
-              <div className="flex flex-col md:col-span-2 lg:col-span-1">
-                <button
-                  type="button"
-                  className="
-            w-full bg-primary-1 text-white
-            py-3 rounded-lg text-base font-bold
-            shadow-md shadow-primary-1/20
-            transition-all duration-300
-            hover:bg-primary-2
-            hover:-translate-y-0.5
-            hover:shadow-lg hover:shadow-primary-1/30
-            active:scale-95
-          "
-                >
-                  Check Availability
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
 
         {/* Section 2 Welcome! */}
         {/* Section 2 Welcome */}
         <section className="py-24 px-5 lg:px-15 bg-white">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-20">
             {/* TEXT SIDE */}
-            <div data-aos="fade-right" className="w-full lg:w-1/2">
+            <div data-aos="fade" className="w-full lg:w-1/2">
               <div className="text-center lg:text-left">
                 <p className="text-primary-1 font-semibold tracking-widest uppercase text-sm mb-3">
                   Welcome to Our Hotel
@@ -237,7 +127,7 @@ export default function Home() {
             </div>
 
             {/* IMAGE SIDE (SWIPER) */}
-            <div data-aos="fade-left" className="w-full lg:w-1/2">
+            <div data-aos="fade" className="w-full lg:w-1/2">
               <Swiper
                 modules={[Autoplay, EffectFade]}
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -246,21 +136,21 @@ export default function Home() {
                 className="rounded-3xl shadow-2xl overflow-hidden"
               >
                 <SwiperSlide>
-                  <img
+                  <ImageSkeleton
                     src="/images/home/s3-image1.jpg"
                     className="w-full h-[480px] object-cover"
                   />
                 </SwiperSlide>
 
                 <SwiperSlide>
-                  <img
+                  <ImageSkeleton
                     src="/images/home/s3-image2.jpg"
                     className="w-full h-[480px] object-cover"
                   />
                 </SwiperSlide>
 
                 <SwiperSlide>
-                  <img
+                  <ImageSkeleton
                     src="/images/home/s3-image3.jpg"
                     className="w-full h-[480px] object-cover"
                   />
@@ -274,7 +164,7 @@ export default function Home() {
         <section className="py-20 px-5 lg:px-15 bg-secondary flex flex-col items-center">
           <div
             className="max-w-3xl text-center mb-16"
-            data-aos="fade-down"
+            data-aos="fade"
             data-aos-duration="500"
           >
             <h1 className="text-4xl lg:text-5xl font-serif font-bold text-primary-2 mb-6">
@@ -291,13 +181,13 @@ export default function Home() {
 
           <div
             className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            data-aos="zoom-in-up"
+            data-aos="fade"
             data-aos-duration="500"
           >
             {/* Room Card 1 */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
               <div className="overflow-hidden h-64">
-                <img
+                <ImageSkeleton
                   src="/images/home/s3-image1.jpg"
                   alt="Single Room"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -321,7 +211,7 @@ export default function Home() {
             {/* Room Card 2 */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
               <div className="overflow-hidden h-64">
-                <img
+                <ImageSkeleton
                   src="/images/home/s3-image2.jpg"
                   alt="Family Room"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -345,7 +235,7 @@ export default function Home() {
             {/* Room Card 3 */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
               <div className="overflow-hidden h-64">
-                <img
+                <ImageSkeleton
                   src="/images/home/s3-image3.jpg"
                   alt="Presidential Room"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -372,7 +262,7 @@ export default function Home() {
         <section className="py-20 px-5 lg:px-15 bg-white flex flex-col items-center">
           <div
             className="max-w-3xl text-center mb-16"
-            data-aos="fade-up"
+            data-aos="fade"
             data-aos-duration="500"
           >
             <h1 className="text-4xl lg:text-5xl font-serif font-bold text-primary-2 mb-6">
@@ -394,7 +284,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto flex flex-col items-center">
             <div
               className="max-w-3xl text-center mb-16"
-              data-aos="zoom-in"
+              data-aos="fade"
               data-aos-duration="500"
             >
               <p className="text-accent uppercase tracking-widest text-sm font-semibold mb-4">
@@ -452,7 +342,7 @@ export default function Home() {
             <div className="w-full max-w-5xl mx-auto">
               {/* MAINS */}
               {activeMenu === "mains" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-tab-fade">
                   <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
                     <img
                       src="/images/home/chickentikka.jpg"
@@ -525,7 +415,7 @@ export default function Home() {
 
               {/* DESSERTS */}
               {activeMenu === "desserts" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-tab-fade">
                   <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
                     <img
                       src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=80"
@@ -562,7 +452,7 @@ export default function Home() {
 
               {/* DRINKS */}
               {activeMenu === "drinks" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-tab-fade">
                   <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
                     <img
                       src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=1200&q=80"
@@ -670,7 +560,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-5 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10 text-center lg:text-left text-white">
             <h2
               className="text-4xl lg:text-5xl font-serif font-bold"
-              data-aos="fade-right"
+              data-aos="fade"
               data-aos-duration="500"
             >
               A Best Place To Stay. Reserve Now!
@@ -678,7 +568,7 @@ export default function Home() {
 
             <Link
               to="/reservation"
-              data-aos="fade-left"
+              data-aos="fade"
               data-aos-duration="500"
             >
               <button className="text-lg font-bold text-white py-4 px-10 bg-accent border border-accent rounded-full transition-all hover:bg-white hover:text-accent shadow-lg shadow-black/20">

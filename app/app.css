@@ -39,6 +39,21 @@ main {
   overflow: hidden;
 }
 
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-tab-fade {
+  animation: tabFadeIn 0.4s ease-out forwards;
+}
+
 /* Dark mode styles */
 html.dark body {
   background-color: #1a1a1a;
