@@ -29,7 +29,8 @@ export default function Contact() {
         </section>
 
         {/* Section 2 Contact Info and Form */}
-        <section className="py-20 px-8 lg:px-16 flex flex-col lg:flex-row gap-12 bg-whitesmoke justify-center items-center lg:items-start max-w-7xl mx-auto">
+        <section className="bg-secondary">
+          <div className="py-20 px-8 lg:px-16 flex flex-col lg:flex-row gap-12 justify-center items-center lg:items-start max-w-7xl mx-auto">
           <div
             className="flex-1 max-w-md w-full"
             data-aos="fade-right"
@@ -43,7 +44,7 @@ export default function Contact() {
               <div>
                 <h3 className="text-lg mb-2.5 text-text-dark">Address</h3>
                 <p className="text-text-light leading-relaxed">
-                  198 West 21th Street, Suite 721 New York NY 10016
+                  2464 Royal Ln. Mesa, New Jersey 45463
                 </p>
               </div>
             </div>
@@ -51,7 +52,7 @@ export default function Contact() {
               <Phone className="text-primary-1 w-6 h-6 mt-1.5" />
               <div>
                 <h3 className="text-lg mb-2.5 text-text-dark">Phone</h3>
-                <p className="text-text-light leading-relaxed">(+1) 435 3533</p>
+                <p className="text-text-light leading-relaxed">(201) 123-4567</p>
               </div>
             </div>
             <div className="flex items-start gap-5 mb-7">
@@ -59,51 +60,52 @@ export default function Contact() {
               <div>
                 <h3 className="text-lg mb-2.5 text-text-dark">Email Address</h3>
                 <p className="text-text-light leading-relaxed">
-                  info@domain.com
+                  royellehotel@gmail.com
                 </p>
               </div>
             </div>
           </div>
 
-          <div
-            className="flex-1 max-w-2xl w-full bg-white p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
-            data-aos="fade-left"
-            data-aos-duration="300"
-          >
-            <form className="flex flex-col gap-5">
-              <div className="flex flex-col md:flex-row gap-5">
+            <div
+              className="flex-1 max-w-2xl w-full bg-white p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
+              data-aos="fade-left"
+              data-aos-duration="300"
+            >
+              <form className="flex flex-col gap-5">
+                <div className="flex flex-col md:flex-row gap-5">
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    required
+                    className="flex-1 p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Your Email"
+                    required
+                    className="flex-1 p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
+                  />
+                </div>
                 <input
                   type="text"
-                  placeholder="Your Name"
+                  placeholder="Subject"
                   required
-                  className="flex-1 p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
+                  className="w-full p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
                 />
-                <input
-                  type="email"
-                  placeholder="Your Email"
+                <textarea
+                  placeholder="Message"
+                  rows={6}
                   required
-                  className="flex-1 p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
-                />
-              </div>
-              <input
-                type="text"
-                placeholder="Subject"
-                required
-                className="w-full p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
-              />
-              <textarea
-                placeholder="Message"
-                rows={6}
-                required
-                className="w-full p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
-              ></textarea>
-              <button
-                type="button"
-                className="bg-primary-1 text-white py-3.5 px-7 border-none rounded-full text-base font-medium cursor-pointer transition-all self-start hover:bg-primary-2 hover:scale-105"
-              >
-                Send Message
-              </button>
-            </form>
+                  className="w-full p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
+                ></textarea>
+                <button
+                  type="submit"
+                  className="contact-send-button bg-primary-1 text-white py-3.5 px-7 rounded-full text-base font-medium cursor-pointer transition-all self-start hover:bg-white hover:text-primary-1 hover:border hover:border-primary-1"
+                >
+                  Send Message
+                </button>
+              </form>
+            </div>
           </div>
         </section>
       </main>

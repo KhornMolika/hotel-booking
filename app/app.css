@@ -130,6 +130,10 @@ html.dark .hover\:bg-primary-1:hover {
   background-color: #1f4d47;
 }
 
+html.dark .hover\:bg-white:hover {
+  background-color: #ffffff;
+}
+
 html.dark .border-primary-1 {
   border-color: var(--color-primary-1);
 }
