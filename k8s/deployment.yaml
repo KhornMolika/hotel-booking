@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-frontend
+  labels:
+    app: react-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-frontend
+  template:
+    metadata:
+      labels:
+        app: react-frontend
+    spec:
+      containers:
+        - name: react-frontend
+          image: REPOSITORY/IMAGE_NAME:TAG
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-frontend
+spec:
+  selector:
+    app: react-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: react-frontend
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls.certresolver: "le"
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+spec:
+  rules:
+    - host: hotel-booking.molika.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: react-frontend
+                port:
+                  number: 80
