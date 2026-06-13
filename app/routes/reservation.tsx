@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Link } from "react-router";
 import { Navbar } from "../components/Navbar";
@@ -27,8 +29,6 @@ export default function Reservation() {
     adult: "",
     roomType: "Standard Room",
   });
-
-  const [showReceipt, setShowReceipt] = useState(false);
 
   const rooms = {
     "Standard Room": {
@@ -89,13 +89,8 @@ export default function Reservation() {
       alert("Please fill all booking information.");
       return;
     }
-
-    setShowReceipt(true);
   };
 
-  const handlePrintReceipt = () => {
-    window.print();
-  };
 
   return (
     <>
@@ -402,88 +397,6 @@ export default function Reservation() {
           </div>
         </section>
       </main>
-
-      {/* Receipt Modal */}
-      {showReceipt && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4 print:bg-white">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 relative print:shadow-none print:rounded-none">
-            <button
-              type="button"
-              onClick={() => setShowReceipt(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-red-500 print:hidden"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div id="receipt" className="text-text-dark">
-              <h2 className="text-3xl font-serif font-bold text-primary-2 text-center mb-2">
-                Booking Receipt
-              </h2>
-
-              <p className="text-center text-text-light text-sm mb-6">
-                Thank you for your booking
-              </p>
-
-              <div className="border-t border-b border-gray-200 py-4 space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="font-semibold">Customer Name:</span>
-                  <span>{formData.name}</span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span className="font-semibold">Phone:</span>
-                  <span>{formData.phone}</span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span className="font-semibold">Room Type:</span>
-                  <span>{selectedRoom.title}</span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span className="font-semibold">Check In:</span>
-                  <span>{formData.checkIn}</span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span className="font-semibold">Check Out:</span>
-                  <span>{formData.checkOut}</span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span className="font-semibold">Adults:</span>
-                  <span>{formData.adult}</span>
-                </div>
-              </div>
-
-              <div className="mt-5 space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span>Room Price:</span>
-                  <span>${selectedRoom.price} / night</span>
-                </div>
-
-                <div className="flex justify-between text-lg font-bold text-primary-2">
-                  <span>Total:</span>
-                  <span>${selectedRoom.price}</span>
-                </div>
-              </div>
-
-              <p className="text-center text-xs text-text-light mt-6">
-                Please show this receipt when checking in.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={handlePrintReceipt}
-              className="w-full mt-6 bg-primary-1 text-white py-3 rounded-xl font-bold hover:bg-primary-2 transition print:hidden"
-            >
-              Print Receipt
-            </button>
-          </div>
-        </div>
-      )}
-
       <Footer />
     </>
   );
