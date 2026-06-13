@@ -63,25 +63,14 @@ export default function Home() {
   };
 
   // ✅ FETCH REVIEWS FROM API
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const res = await fetch(
-               `${import.meta.env.VITE_API_URL}/api/reviews`
-        );
+ const API_URL = import.meta.env.VITE_API_URL;
 
-        if (!res.ok) throw new Error("Failed to fetch reviews");
-
-        const data: Review[] = await res.json();
-
-        setReviews(data);
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      }
-    };
-
-    fetchReviews();
-  }, []);
+useEffect(() => {
+  fetch(`${API_URL}/api/reviews`)
+    .then((res) => res.json())
+    .then((data) => setReviews(data))
+    .catch((err) => console.error(err));
+}, []);
 
   const handleAvailabilityChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

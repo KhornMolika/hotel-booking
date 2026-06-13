@@ -9,4 +9,5 @@ export default [
     route("contact", "routes/contact.tsx"),
     route("login", "routes/login.tsx"),
     route("signup", "routes/signup.tsx"),
+    route("profile", "routes/UserProfile.tsx"),
 ] satisfies RouteConfig;

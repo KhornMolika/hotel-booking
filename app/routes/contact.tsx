@@ -16,7 +16,7 @@ export default function Contact() {
     message: "",
   });
 
-  // ✅ FIXED TYPE FOR EVENT
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -29,50 +29,40 @@ export default function Contact() {
   };
 
   // ✅ FIXED TYPE FOR SUBMIT
- const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const API_URL = import.meta.env.VITE_API_URL;
+console.log("API:", import.meta.env.VITE_API_URL);
+const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+) => {
   e.preventDefault();
-const randomImages = [
-  "https://i.pravatar.cc/150?img=1",
-  "https://i.pravatar.cc/150?img=2",
-  "https://i.pravatar.cc/150?img=3",
-  "https://i.pravatar.cc/150?img=4",
-  "https://i.pravatar.cc/150?img=5",
-];
-const roomTypeMap: Record<string, string> = {
-  "1": "Standard Room",
-  "2": "Deluxe Room",
-  "3": "Suite Room",
-};
-const getRandomImage = () => {
-  const index = Math.floor(Math.random() * randomImages.length);
-  return randomImages[index];
-};
 
-const newReview = {
-  name: "Guest User",
-  role: "Hotel Guest",
-   img: getRandomImage(),
-  title: `${roomTypeMap[formData.roomTypeId]} Review`,
-  text: formData.message,
-  roomType: roomTypeMap[formData.roomTypeId],
-};
-  // get existing reviews
-  const existingReviews =
-    JSON.parse(localStorage.getItem("reviews") || "[]");
+  try {
+    const response = await fetch(`${API_URL}/api/reviews`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        roomTypeId: formData.roomTypeId,
+        message: formData.message,
+      }),
+    });
 
-  // add new review on top
-  const updatedReviews = [newReview, ...existingReviews];
+    if (!response.ok) {
+      throw new Error("Failed to submit review");
+    }
 
-  // save back
-  localStorage.setItem("reviews", JSON.stringify(updatedReviews));
+    const data = await response.json();
 
-  console.log("REVIEW SAVED:", newReview);
+    console.log("Review submitted:", data);
 
-  // reset form (KEEP YOUR UI SAME)
-  setFormData({
-    roomTypeId: "",
-    message: "",
-  });
+    setFormData({
+      roomTypeId: "",
+      message: "",
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
 };
 
   return (
@@ -81,40 +71,57 @@ const newReview = {
         <Navbar />
       </header>
 
-      <main className="mt-[70px] min-h-[calc(100vh-116px)]">
-  <section className="py-20 px-8 lg:px-16 flex flex-col lg:flex-row gap-12 bg-whitesmoke justify-center items-center lg:items-start max-w-7xl mx-auto">
+<main className="mt-[70px] min-h-[calc(100vh-116px)] bg-whitesmoke">
+  <section className="max-w-7xl mx-auto px-6 lg:px-16 py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-    {/* LEFT SIDE (UNCHANGED STRUCTURE, SMALLER TEXT) */}
-    <div className="flex-1 max-w-md w-full">
-      <h2 className="text-3xl lg:text-4xl font-serif font-bold text-primary-2 mb-4 leading-tight">
+    {/* LEFT SIDE */}
+    <div className="space-y-6">
+      <h2 className="text-4xl lg:text-5xl font-serif font-bold text-primary-2 leading-tight">
         Share Your Experience
       </h2>
 
-      <p className="text-sm lg:text-base text-text-light leading-relaxed mb-4">
-        We value every guest's feedback and strive to provide the best hospitality experience possible.
+      <p className="text-text-light text-base leading-relaxed">
+        We value every guest's feedback and continuously improve our service to give you the best stay possible.
       </p>
 
-      <p className="text-sm lg:text-base text-text-light leading-relaxed mb-4">
-        Tell us about your stay, room quality, service, and overall experience.
+      <p className="text-text-light text-base leading-relaxed">
+        Tell us about your room quality, cleanliness, staff service, and overall experience.
       </p>
 
       <div className="border-l-4 border-primary-1 pl-5">
-        <p className="text-sm lg:text-base text-text-dark italic leading-relaxed">
-          “Thank you for taking the time to share your valuable feedback.”
+        <p className="text-text-dark italic text-base">
+          “Your feedback helps us create better stays for future guests.”
         </p>
+      </div>
+
+      {/* CONTACT INFO BLOCK */}
+      <div className="pt-6 space-y-4 text-sm text-text-light">
+        <div className="flex items-center gap-3">
+          <MapPin size={18} />
+          <span>Phnom Penh, Cambodia</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Phone size={18} />
+          <span>+855 123 456 789</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Mail size={18} />
+          <span>support@hotel.com</span>
+        </div>
       </div>
     </div>
 
-    {/* RIGHT SIDE (ONLY TEXT SMALLER, SAME UI) */}
-    <div className="flex-1 max-w-2xl w-full bg-white p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
-
+    {/* RIGHT SIDE FORM */}
+    <div className="bg-white rounded-2xl shadow-xl p-8 lg:p-10">
       <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
 
-        <h2 className="text-3xl lg:text-4xl font-serif font-bold text-primary-2 mb-2 leading-tight">
+        <h2 className="text-3xl font-serif font-bold text-primary-2">
           Write a Review
         </h2>
 
-        <p className="text-sm lg:text-base text-text-light mb-2">
+        <p className="text-text-light text-sm">
           Share your experience with us.
         </p>
 
@@ -123,7 +130,7 @@ const newReview = {
           value={formData.roomTypeId}
           onChange={handleChange}
           required
-          className="w-full p-3 border border-[#e2e8f0] rounded text-sm lg:text-base text-text-dark focus:outline-none focus:border-primary-1 font-sans"
+          className="w-full p-3 border border-gray-200 rounded-lg text-text-dark focus:outline-none focus:border-primary-1"
         >
           <option value="">Select Room Type</option>
           <option value="1">Standard Room</option>
@@ -138,12 +145,12 @@ const newReview = {
           placeholder="Share your experience..."
           rows={5}
           required
-          className="w-full p-3 border border-[#e2e8f0] rounded text-sm lg:text-base text-text-dark focus:outline-none focus:border-primary-1 font-sans"
+          className="w-full p-3 border border-gray-200 rounded-lg text-text-dark focus:outline-none focus:border-primary-1"
         />
 
         <button
           type="submit"
-          className="bg-primary-1 text-white py-3 px-6 border-none rounded-full text-sm lg:text-base font-medium cursor-pointer transition-all self-start hover:bg-primary-2 hover:scale-105"
+          className="bg-primary-1 text-white py-3 rounded-full font-medium hover:bg-primary-2 transition hover:scale-[1.02]"
         >
           Submit Review
         </button>
