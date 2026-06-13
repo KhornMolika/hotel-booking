@@ -1,112 +1,159 @@
+import { useState } from "react";
 import { Link } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { MapPin, Phone, Mail } from "lucide-react";
 
+// ✅ ADD TYPE
+type FormDataType = {
+  roomTypeId: string;
+  message: string;
+};
+
 export default function Contact() {
+  const [formData, setFormData] = useState<FormDataType>({
+    roomTypeId: "",
+    message: "",
+  });
+
+  // ✅ FIXED TYPE FOR EVENT
+  const handleChange = (
+    e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // ✅ FIXED TYPE FOR SUBMIT
+ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+const randomImages = [
+  "https://i.pravatar.cc/150?img=1",
+  "https://i.pravatar.cc/150?img=2",
+  "https://i.pravatar.cc/150?img=3",
+  "https://i.pravatar.cc/150?img=4",
+  "https://i.pravatar.cc/150?img=5",
+];
+const roomTypeMap: Record<string, string> = {
+  "1": "Standard Room",
+  "2": "Deluxe Room",
+  "3": "Suite Room",
+};
+const getRandomImage = () => {
+  const index = Math.floor(Math.random() * randomImages.length);
+  return randomImages[index];
+};
+
+const newReview = {
+  name: "Guest User",
+  role: "Hotel Guest",
+   img: getRandomImage(),
+  title: `${roomTypeMap[formData.roomTypeId]} Review`,
+  text: formData.message,
+  roomType: roomTypeMap[formData.roomTypeId],
+};
+  // get existing reviews
+  const existingReviews =
+    JSON.parse(localStorage.getItem("reviews") || "[]");
+
+  // add new review on top
+  const updatedReviews = [newReview, ...existingReviews];
+
+  // save back
+  localStorage.setItem("reviews", JSON.stringify(updatedReviews));
+
+  console.log("REVIEW SAVED:", newReview);
+
+  // reset form (KEEP YOUR UI SAME)
+  setFormData({
+    roomTypeId: "",
+    message: "",
+  });
+};
+
   return (
     <>
       <header>
         <Navbar />
       </header>
-      <main className="mt-[116px] min-h-[calc(100vh-116px)]">
-        {/* Hero Section */}
-        <section className="bg-[url('/images/hero.jpg')] bg-cover bg-no-repeat bg-center bg-fixed h-[calc(100vh-116px)]">
-          <div className="bg-black/45 h-full">
-            <div className="flex flex-col items-center justify-center h-full w-full text-white relative">
-              <h1 className="text-4xl lg:text-7xl font-serif mb-4 font-bold">
-                Contact Us
-              </h1>
-              <div className="flex items-center text-lg font-medium">
-                <Link to="/" className="hover:text-accent transition-colors">
-                  Home
-                </Link>
-                <span className="mx-3">|</span>
-                <span className="text-accent">Contact Us</span>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        {/* Section 2 Contact Info and Form */}
-        <section className="py-20 px-8 lg:px-16 flex flex-col lg:flex-row gap-12 bg-whitesmoke justify-center items-center lg:items-start max-w-7xl mx-auto">
-          <div
-            className="flex-1 max-w-md w-full"
-            data-aos="fade"
-            data-aos-duration="300"
-          >
-            <h2 className="text-3xl mb-10 text-text-dark">
-              Contact Information
-            </h2>
-            <div className="flex items-start gap-5 mb-7">
-              <MapPin className="text-primary-1 w-6 h-6 mt-1.5" />
-              <div>
-                <h3 className="text-lg mb-2.5 text-text-dark">Address</h3>
-                <p className="text-text-light leading-relaxed">
-                  198 West 21th Street, Suite 721 New York NY 10016
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-5 mb-7">
-              <Phone className="text-primary-1 w-6 h-6 mt-1.5" />
-              <div>
-                <h3 className="text-lg mb-2.5 text-text-dark">Phone</h3>
-                <p className="text-text-light leading-relaxed">(+1) 435 3533</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-5 mb-7">
-              <Mail className="text-primary-1 w-6 h-6 mt-1.5" />
-              <div>
-                <h3 className="text-lg mb-2.5 text-text-dark">Email Address</h3>
-                <p className="text-text-light leading-relaxed">
-                  info@domain.com
-                </p>
-              </div>
-            </div>
-          </div>
+      <main className="mt-[70px] min-h-[calc(100vh-116px)]">
+  <section className="py-20 px-8 lg:px-16 flex flex-col lg:flex-row gap-12 bg-whitesmoke justify-center items-center lg:items-start max-w-7xl mx-auto">
 
-          <div
-            className="flex-1 max-w-2xl w-full bg-white p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
-            data-aos="fade"
-            data-aos-duration="300"
-          >
-            <form className="flex flex-col gap-5">
-              <div className="flex flex-col md:flex-row gap-5">
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  required
-                  className="flex-1 p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
-                />
-                <input
-                  type="email"
-                  placeholder="Your Email"
-                  required
-                  className="flex-1 p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
-                />
-              </div>
-              <input
-                type="text"
-                placeholder="Subject"
-                required
-                className="w-full p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
-              />
-              <textarea
-                placeholder="Message"
-                rows={6}
-                required
-                className="w-full p-3.5 border border-[#e2e8f0] rounded text-text-dark focus:outline-none focus:border-primary-1 font-sans"
-              ></textarea>
-              <button
-                type="button"
-                className="bg-primary-1 text-white py-3.5 px-7 border-none rounded-full text-base font-medium cursor-pointer transition-all self-start hover:bg-primary-2 hover:scale-105"
-              >
-                Send Message
-              </button>
-            </form>
-          </div>
-        </section>
-      </main>
+    {/* LEFT SIDE (UNCHANGED STRUCTURE, SMALLER TEXT) */}
+    <div className="flex-1 max-w-md w-full">
+      <h2 className="text-3xl lg:text-4xl font-serif font-bold text-primary-2 mb-4 leading-tight">
+        Share Your Experience
+      </h2>
+
+      <p className="text-sm lg:text-base text-text-light leading-relaxed mb-4">
+        We value every guest's feedback and strive to provide the best hospitality experience possible.
+      </p>
+
+      <p className="text-sm lg:text-base text-text-light leading-relaxed mb-4">
+        Tell us about your stay, room quality, service, and overall experience.
+      </p>
+
+      <div className="border-l-4 border-primary-1 pl-5">
+        <p className="text-sm lg:text-base text-text-dark italic leading-relaxed">
+          “Thank you for taking the time to share your valuable feedback.”
+        </p>
+      </div>
+    </div>
+
+    {/* RIGHT SIDE (ONLY TEXT SMALLER, SAME UI) */}
+    <div className="flex-1 max-w-2xl w-full bg-white p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+
+      <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+
+        <h2 className="text-3xl lg:text-4xl font-serif font-bold text-primary-2 mb-2 leading-tight">
+          Write a Review
+        </h2>
+
+        <p className="text-sm lg:text-base text-text-light mb-2">
+          Share your experience with us.
+        </p>
+
+        <select
+          name="roomTypeId"
+          value={formData.roomTypeId}
+          onChange={handleChange}
+          required
+          className="w-full p-3 border border-[#e2e8f0] rounded text-sm lg:text-base text-text-dark focus:outline-none focus:border-primary-1 font-sans"
+        >
+          <option value="">Select Room Type</option>
+          <option value="1">Standard Room</option>
+          <option value="2">Deluxe Room</option>
+          <option value="3">Suite Room</option>
+        </select>
+
+        <textarea
+          name="message"
+          value={formData.message}
+          onChange={handleChange}
+          placeholder="Share your experience..."
+          rows={5}
+          required
+          className="w-full p-3 border border-[#e2e8f0] rounded text-sm lg:text-base text-text-dark focus:outline-none focus:border-primary-1 font-sans"
+        />
+
+        <button
+          type="submit"
+          className="bg-primary-1 text-white py-3 px-6 border-none rounded-full text-sm lg:text-base font-medium cursor-pointer transition-all self-start hover:bg-primary-2 hover:scale-105"
+        >
+          Submit Review
+        </button>
+
+      </form>
+    </div>
+
+  </section>
+</main>
+
       <Footer />
     </>
   );
