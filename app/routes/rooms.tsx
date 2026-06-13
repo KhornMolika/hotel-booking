@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { Star, BedDouble, Bath, Maximize } from "lucide-react";
 import { ImageSkeleton } from "../components/ImageSkeleton";
 
+type ApiRoom = {
+  name: string;
+  description: string;
+  price: number;
+  capacity: number;
+};
+
 export default function Rooms() {
   const [selectedCategory, setSelectedCategory] = useState("All Rooms");
+  const [rooms, setRooms] = useState<any[]>([]);
 
   const features = [
     "Breakfast Included",
@@ -22,7 +30,7 @@ export default function Rooms() {
     "Standard Rooms",
   ];
 
-  const rooms = [
+  const oldRooms = [
     {
       img: "/images/home/s3-image1.jpg",
       category: "Standard Rooms",
@@ -135,6 +143,55 @@ export default function Rooms() {
     },
   ];
 
+useEffect(() => {
+  const fetchRooms = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("https://api-hotel-booking.molika.app/api/roomType", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const data: ApiRoom[] = await res.json();
+      console.log("Fetch success:", data);
+
+      const updatedRooms = oldRooms.map((oldRoom, index) => {
+        const apiRoom = data[index];
+
+        if (!apiRoom) return oldRoom;
+
+        return {
+          ...oldRoom,
+          title: apiRoom.name,
+          tag: apiRoom.name,
+          price: apiRoom.price,
+          beds: apiRoom.capacity,
+          description: apiRoom.description,
+
+
+          // keep your old input image
+          img: oldRoom.img,
+        };
+      });
+
+      setRooms(updatedRooms);
+    } catch (error: any) {
+      console.error("Fetch room error:", error.message);
+      setRooms(oldRooms);
+    }
+  };
+
+  fetchRooms();
+}, []);
+
   const filteredRooms =
     selectedCategory === "All Rooms"
       ? rooms
@@ -149,6 +206,7 @@ export default function Rooms() {
     beds,
     baths,
     sqft,
+    description,
   }: any) => (
     <div
       className="bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2"
@@ -156,7 +214,11 @@ export default function Rooms() {
       data-aos-duration="500"
     >
       <div className="relative h-64">
-        <ImageSkeleton src={img} alt={title} className="w-full h-full object-cover" />
+        <ImageSkeleton
+          src={img}
+          alt={title}
+          className="w-full h-full object-cover"
+        />
 
         <div className="absolute bottom-3.5 left-5 bg-primary-1 text-white text-xs font-medium px-4 py-1.5 rounded-full z-10 shadow-md">
           {tag}
@@ -178,9 +240,11 @@ export default function Rooms() {
           </div>
         </div>
 
-        <h3 className="font-serif text-xl font-bold text-text-dark mb-4">
+        <h3 className="font-serif text-xl font-bold text-text-dark mb-2">
           {title}
         </h3>
+
+        <p className="text-sm text-text-light mb-4">{description}</p>
 
         <hr className="border-gray-100 mb-4" />
 
@@ -208,7 +272,6 @@ export default function Rooms() {
       </header>
 
       <main className="mt-[116px] min-h-[calc(100vh-116px)]">
-        {/* Banner Section */}
         <section className="bg-[url('/images/hero.jpg')] bg-cover bg-no-repeat bg-center bg-fixed h-[calc(100vh-116px)] relative">
           <div className="bg-black/45 h-full">
             <div className="flex flex-col items-center justify-center h-full w-full text-white relative">
@@ -227,7 +290,6 @@ export default function Rooms() {
           </div>
         </section>
 
-        {/* Rooms Section */}
         <section className="py-20 px-5 lg:px-15 flex flex-col items-center">
           <div
             className="text-center mb-10"
@@ -245,7 +307,7 @@ export default function Rooms() {
             </h1>
           </div>
 
-          {/* Category Buttons */}
+
           <div className="flex flex-wrap justify-center gap-4 mb-12">
             {categories.map((category) => (
               <button
@@ -262,7 +324,6 @@ export default function Rooms() {
             ))}
           </div>
 
-          {/* Room Cards */}
           <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredRooms.map((room, index) => (
               <RoomCard
@@ -272,6 +333,7 @@ export default function Rooms() {
                 price={room.price}
                 rating={room.rating}
                 title={room.title}
+                description={room.description}
                 beds={room.beds}
                 baths={room.baths}
                 sqft={room.sqft}
@@ -280,7 +342,6 @@ export default function Rooms() {
           </div>
         </section>
 
-        {/* Feature Bar */}
         <div className="bg-primary-1 text-white py-6 px-5 lg:px-15 overflow-hidden shadow-inner">
           <div className="flex flex-wrap items-center justify-center lg:justify-between gap-6 max-w-7xl mx-auto">
             {features.map((feature, i) => (

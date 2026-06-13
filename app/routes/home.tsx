@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Star } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { Slider } from "../components/Slider";
-import { Testimonials } from "../components/Testimonials";
 import { ImageSkeleton } from "../components/ImageSkeleton";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-fade";
-//Codes for Home page
+
 const sliderImages = [
   "/images/home/s3-image1.jpg",
   "/images/home/s3-image2.jpg",
@@ -19,8 +18,18 @@ const sliderImages = [
   "/images/home/s3-image5.jpg",
 ];
 
+type ApiMenu = {
+  name: string;
+  description: string;
+  ingredients: string;
+  price: number;
+  isAvailable: boolean;
+  categoryId: number;
+};
+
 export default function Home() {
   const [activeMenu, setActiveMenu] = useState("mains");
+  const [menus, setMenus] = useState<any[]>([]);
 
   const [availabilityForm, setAvailabilityForm] = useState({
     checkIn: "",
@@ -30,6 +39,122 @@ export default function Home() {
   });
 
   const [availabilityResult, setAvailabilityResult] = useState("");
+
+  const oldMenus = [
+    {
+      img: "/images/home/chickentikka.jpg",
+      tab: "mains",
+      name: "Murgh Tikka Masala",
+      price: 20,
+      description: "Creamy Indian chicken curry with naan.",
+    },
+    {
+      img: "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=1200&q=80",
+      tab: "mains",
+      name: "Fish Moilee",
+      price: 30,
+      description: "Kerala coconut fish curry.",
+    },
+    {
+      img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1200&q=80",
+      tab: "mains",
+      name: "French Toast Combo",
+      price: 10,
+      description: "Golden toast with berries and syrup.",
+    },
+    {
+      img: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=1200&q=80",
+      tab: "mains",
+      name: "Veggie Omelet",
+      price: 8.5,
+      description: "Soft omelet with fresh vegetables.",
+    },
+    {
+      img: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=80",
+      tab: "desserts",
+      name: "Banana Split",
+      price: 11,
+      description: "Ice cream with fruits & chocolate.",
+    },
+    {
+      img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1200&q=80",
+      tab: "desserts",
+      name: "Apple Strudel",
+      price: 12,
+      description: "Warm pastry with vanilla ice cream.",
+    },
+    {
+      img: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=1200&q=80",
+      tab: "drinks",
+      name: "Fresh Lemonade",
+      price: 8,
+      description: "Cold refreshing lemonade with mint.",
+    },
+    {
+      img: "https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?auto=format&fit=crop&w=1200&q=80",
+      tab: "drinks",
+      name: "Spring Water",
+      price: 5,
+      description: "Pure chilled mineral water.",
+    },
+  ];
+
+  useEffect(() => {
+    const fetchMenus = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch("https://api-hotel-booking.molika.app/api/menus", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data: ApiMenu[] = await res.json();
+        console.log("Menu from Postman/API:", data);
+
+        const getTabByCategoryId = (categoryId: number) => {
+          if (categoryId === 1) return "mains";
+          if (categoryId === 2) return "desserts";
+          if (categoryId === 3) return "drinks";
+          return "mains";
+        };
+
+        const updatedMenus = data.map((apiMenu, index) => {
+          const oldMenu = oldMenus[index % oldMenus.length];
+
+
+          return {
+            ...oldMenu,
+            name: apiMenu.name,
+            price: apiMenu.price,
+            description: apiMenu.description,
+            tab: getTabByCategoryId(apiMenu.categoryId),
+
+            // keep your old input image
+            img: oldMenu.img,
+          };
+        });
+
+        setMenus(updatedMenus);
+      } catch (error: any) {
+        console.error("Fetch menu error:", error.message);
+
+        // if API error, show your old static menu
+        setMenus(oldMenus);
+      }
+    };
+
+    fetchMenus();
+  }, []);
+
+  const filteredMenus = menus.filter((menu) => menu.tab === activeMenu);
 
   const handleAvailabilityChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -88,13 +213,9 @@ export default function Home() {
           </div>
         </section>
 
-
-
-        {/* Section 2 Welcome! */}
         {/* Section 2 Welcome */}
         <section className="py-24 px-5 lg:px-15 bg-white">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-20">
-            {/* TEXT SIDE */}
             <div data-aos="fade" className="w-full lg:w-1/2">
               <div className="text-center lg:text-left">
                 <p className="text-primary-1 font-semibold tracking-widest uppercase text-sm mb-3">
@@ -113,11 +234,12 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5">
                   <button
                     className="px-8 py-3 bg-primary-1 text-white rounded-full font-medium
-            transition-all duration-300 hover:bg-primary-2 hover:-translate-y-0.5
-            shadow-md shadow-primary-1/20"
+                    transition-all duration-300 hover:bg-primary-2 hover:-translate-y-0.5
+                    shadow-md shadow-primary-1/20"
                   >
                     Learn More
                   </button>
+
 
                   <p className="text-primary-1 font-semibold cursor-pointer hover:text-primary-2 transition-colors">
                     SEE VIDEO
@@ -126,7 +248,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* IMAGE SIDE (SWIPER) */}
             <div data-aos="fade" className="w-full lg:w-1/2">
               <Swiper
                 modules={[Autoplay, EffectFade]}
@@ -184,7 +305,6 @@ export default function Home() {
             data-aos="fade"
             data-aos-duration="500"
           >
-            {/* Room Card 1 */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
               <div className="overflow-hidden h-64">
                 <ImageSkeleton
@@ -208,7 +328,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Room Card 2 */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
               <div className="overflow-hidden h-64">
                 <ImageSkeleton
@@ -223,6 +342,7 @@ export default function Home() {
                   Family Room
                 </h3>
 
+
                 <p className="text-accent font-semibold text-lg">
                   $120{" "}
                   <span className="text-sm font-normal text-text-light">
@@ -232,7 +352,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Room Card 3 */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group">
               <div className="overflow-hidden h-64">
                 <ImageSkeleton
@@ -279,7 +398,7 @@ export default function Home() {
           <Slider images={sliderImages} />
         </section>
 
-        {/* Section 5 Our Restaurant Menu */}
+        {/* Section 5 Restaurant Menu */}
         <section className="py-20 px-5 lg:px-15 bg-primary-2 text-white">
           <div className="max-w-7xl mx-auto flex flex-col items-center">
             <div
@@ -326,6 +445,7 @@ export default function Home() {
                   DESSERTS
                 </button>
 
+
                 <button
                   onClick={() => setActiveMenu("drinks")}
                   className={`text-base lg:text-lg font-bold tracking-wider transition-colors ${
@@ -340,152 +460,34 @@ export default function Home() {
             </div>
 
             <div className="w-full max-w-5xl mx-auto">
-              {/* MAINS */}
-              {activeMenu === "mains" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-tab-fade">
-                  <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-tab-fade">
+                {filteredMenus.map((menu, index) => (
+                  <div
+                    key={index}
+                    className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition"
+                  >
                     <img
-                      src="/images/home/chickentikka.jpg"
+                      src={menu.img}
                       className="w-full h-52 object-cover"
+                      alt={menu.name}
                     />
-                    <div className="p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-lg">
-                          Murgh Tikka Masala
-                        </h3>
-                        <span className="text-accent font-bold">$20</span>
-                      </div>
-                      <p className="text-gray-300 text-sm">
-                        Creamy Indian chicken curry with naan.
-                      </p>
-                    </div>
-                  </div>
 
-                  <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
-                    <img
-                      src="https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=1200&q=80"
-                      className="w-full h-52 object-cover"
-                    />
                     <div className="p-4">
                       <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-lg">Fish Moilee</h3>
-                        <span className="text-accent font-bold">$30</span>
-                      </div>
-                      <p className="text-gray-300 text-sm">
-                        Kerala coconut fish curry.
-                      </p>
-                    </div>
-                  </div>
+                        <h3 className="font-bold text-lg">{menu.name}</h3>
 
-                  <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
-                    <img
-                      src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1200&q=80"
-                      className="w-full h-52 object-cover"
-                    />
-                    <div className="p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-lg">
-                          French Toast Combo
-                        </h3>
-                        <span className="text-accent font-bold">$10</span>
+                        <span className="text-accent font-bold">
+                          ${menu.price}
+                        </span>
                       </div>
-                      <p className="text-gray-300 text-sm">
-                        Golden toast with berries and syrup.
-                      </p>
-                    </div>
-                  </div>
 
-                  <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
-                    <img
-                      src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=1200&q=80"
-                      className="w-full h-52 object-cover"
-                    />
-                    <div className="p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-lg">Veggie Omelet</h3>
-                        <span className="text-accent font-bold">$8.50</span>
-                      </div>
                       <p className="text-gray-300 text-sm">
-                        Soft omelet with fresh vegetables.
+                        {menu.description}
                       </p>
                     </div>
                   </div>
-                </div>
-              )}
-
-              {/* DESSERTS */}
-              {activeMenu === "desserts" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-tab-fade">
-                  <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
-                    <img
-                      src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=80"
-                      className="w-full h-52 object-cover"
-                    />
-                    <div className="p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-lg">Banana Split</h3>
-                        <span className="text-accent font-bold">$11</span>
-                      </div>
-                      <p className="text-gray-300 text-sm">
-                        Ice cream with fruits & chocolate.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
-                    <img
-                      src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1200&q=80"
-                      className="w-full h-52 object-cover"
-                    />
-                    <div className="p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-lg">Apple Strudel</h3>
-                        <span className="text-accent font-bold">$12</span>
-                      </div>
-                      <p className="text-gray-300 text-sm">
-                        Warm pastry with vanilla ice cream.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* DRINKS */}
-              {activeMenu === "drinks" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-tab-fade">
-                  <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
-                    <img
-                      src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=1200&q=80"
-                      className="w-full h-52 object-cover"
-                    />
-                    <div className="p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-lg">Fresh Lemonade</h3>
-                        <span className="text-accent font-bold">$8</span>
-                      </div>
-                      <p className="text-gray-300 text-sm">
-                        Cold refreshing lemonade with mint.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="bg-white/10 rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition">
-                    <img
-                      src="https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?auto=format&fit=crop&w=1200&q=80"
-                      className="w-full h-52 object-cover"
-                    />
-                    <div className="p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-bold text-lg">Spring Water</h3>
-                        <span className="text-accent font-bold">$5</span>
-                      </div>
-                      <p className="text-gray-300 text-sm">
-                        Pure chilled mineral water.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -519,12 +521,10 @@ export default function Home() {
               key={i}
               className="relative bg-white shadow-sm p-7 hover:-translate-y-2 transition-all duration-300"
             >
-              {/* QUOTE ICON (light background style) */}
               <div className="text-primary-1/10 text-5xl font-serif absolute top-4 right-6">
                 “”
               </div>
 
-              {/* USER */}
               <div className="flex items-center gap-4 mb-6">
                 <img
                   src={t.img}
@@ -536,16 +536,15 @@ export default function Home() {
                   <h5 className="font-bold text-text-dark leading-tight">
                     {t.name}
                   </h5>
+
                   <p className="text-sm text-accent">{t.role}</p>
                 </div>
               </div>
 
-              {/* TITLE */}
               <h4 className="font-serif text-lg font-bold text-primary-2 mb-3">
                 {t.title}
               </h4>
 
-              {/* COMMENT (clean + readable) */}
               <p className="text-text-light text-sm leading-relaxed italic">
                 {t.text}
               </p>
@@ -557,6 +556,7 @@ export default function Home() {
         <section className="bg-[url('/images/hero.jpg')] bg-cover bg-no-repeat bg-center bg-fixed py-24 relative">
           <div className="absolute inset-0 bg-primary-2/80"></div>
 
+
           <div className="max-w-7xl mx-auto px-5 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10 text-center lg:text-left text-white">
             <h2
               className="text-4xl lg:text-5xl font-serif font-bold"
@@ -566,11 +566,7 @@ export default function Home() {
               A Best Place To Stay. Reserve Now!
             </h2>
 
-            <Link
-              to="/reservation"
-              data-aos="fade"
-              data-aos-duration="500"
-            >
+            <Link to="/reservation" data-aos="fade" data-aos-duration="500">
               <button className="text-lg font-bold text-white py-4 px-10 bg-accent border border-accent rounded-full transition-all hover:bg-white hover:text-accent shadow-lg shadow-black/20">
                 Reserve Now
               </button>
