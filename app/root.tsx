@@ -13,6 +13,7 @@ import "aos/dist/aos.css";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { ThemeProvider } from "./context/ThemeContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -40,18 +41,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
   );
 }
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+if (!googleClientId) {
+  console.error(
+    "CRITICAL: VITE_GOOGLE_CLIENT_ID is missing from your .env file!",
+  );
+}
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <GoogleOAuthProvider clientId={googleClientId || ""}>
+      <ThemeProvider>
+        <Outlet />
+      </ThemeProvider>
+    </GoogleOAuthProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
