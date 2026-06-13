@@ -87,3 +87,5 @@ export const authService = {
     return response.data.user;
   },
 };
+export { setInMemoryToken };
+
