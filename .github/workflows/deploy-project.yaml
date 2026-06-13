@@ -14,8 +14,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Login Docker Hub
         run: |
@@ -31,6 +29,15 @@ jobs:
         run: |
           docker push $IMAGE_NAME:latest
 
+      - name: Copy k8s manifests
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "k8s/deployment.yaml"
+          target: "/tmp/react-frontend"
+
       - name: Deploy Server
         uses: appleboy/ssh-action@v1
         with:
@@ -38,18 +45,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/hotel-booking
-
-            sudo docker pull $IMAGE_NAME:latest
-
-            sudo docker rm -f react-frontend || true
-
-            sudo docker run -d \
-              --name react-frontend \
-              --network web \
-              -l traefik.enable=true \
-              -l traefik.http.routers.react.rule="Host(\`hotel-booking.molika.app\`)" \
-              -l traefik.http.routers.react.entrypoints=websecure \
-              -l traefik.http.routers.react.tls.certresolver=le \
-              -l traefik.http.services.react.loadbalancer.server.port=3000 \
-              $IMAGE_NAME:latest
+            IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/hotel-booking:latest
+            
+            # Replace placeholder with actual image name
+            sed -i "s|REPOSITORY/IMAGE_NAME:TAG|$IMAGE_NAME|g" /tmp/react-frontend/k8s/deployment.yaml
+            
+            # Apply to Kubernetes cluster
+            sudo kubectl apply -f /tmp/react-frontend/k8s/deployment.yaml
