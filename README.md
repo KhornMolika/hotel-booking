@@ -9,6 +9,8 @@ Welcome to the Voco Hotel frontend application! This project is a modern, fast, 
 - **Animations**: [AOS (Animate On Scroll)](https://michalsnik.github.io/aos/)
 
 
+
+
 ## Project Structure
 - `app/routes.ts`: Centralized routing configuration.
 - `app/routes/`: Contains all the page-level route components (`home`, `about`, `rooms`, `reservation`, `events`, `contact`).
