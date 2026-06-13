@@ -35,7 +35,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "k8s/deployment.yaml"
+          source: "k8s"
           target: "/tmp/react-frontend"
 
       - name: Deploy Server
@@ -61,4 +61,4 @@ jobs:
               --dry-run=client -o yaml | kubectl apply -f -
               
             # Apply to Kubernetes cluster
-            /usr/local/bin/kubectl apply -f /tmp/react-frontend/k8s/deployment.yaml
+            /usr/local/bin/kubectl apply -f /tmp/react-frontend/k8s/
