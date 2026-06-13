@@ -2,14 +2,12 @@
 
 Welcome to the Voco Hotel frontend application! This project is a modern, fast, and responsive React application built with **React Router v7** and styled with **Tailwind CSS v4**.
 
+
 ## Tech Stack
 - **Framework**: [React Router v7](https://reactrouter.com/)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Animations**: [AOS (Animate On Scroll)](https://michalsnik.github.io/aos/)
-
-
-
 
 ## Project Structure
 - `app/routes.ts`: Centralized routing configuration.
