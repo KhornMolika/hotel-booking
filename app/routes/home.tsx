@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { Star } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { Slider } from "../components/Slider";
-import { Testimonials } from "../components/Testimonials";
 import { ImageSkeleton } from "../components/ImageSkeleton";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
+
 import "swiper/css";
 import "swiper/css/effect-fade";
-//Codes for Home page
+
+// Codes for Home page
 const sliderImages = [
   "/images/home/s3-image1.jpg",
   "/images/home/s3-image2.jpg",
@@ -18,6 +19,13 @@ const sliderImages = [
   "/images/home/s3-image4.jpg",
   "/images/home/s3-image5.jpg",
 ];
+
+// ✅ API TYPE ONLY
+type Review = {
+  userId: number;
+  roomTypeId: number;
+  message: string;
+};
 
 export default function Home() {
   const [activeMenu, setActiveMenu] = useState("mains");
@@ -31,8 +39,52 @@ export default function Home() {
 
   const [availabilityResult, setAvailabilityResult] = useState("");
 
+  // ✅ FIXED TYPE
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  // ✅ ROOM TYPE MAP
+  const roomTypeMap: Record<number, string> = {
+    1: "Standard Room",
+    2: "Deluxe Room",
+    3: "Suite Room",
+  };
+
+  // ✅ AVATARS (5 IMAGES)
+  const avatars = [
+    "/images/avatars/1.jpg",
+    "/images/avatars/2.jpg",
+    "/images/avatars/3.jpg",
+    "/images/avatars/4.jpg",
+    "/images/avatars/5.jpg",
+  ];
+
+  const getRandomAvatar = (userId: number) => {
+    return avatars[userId % avatars.length];
+  };
+
+  // ✅ FETCH REVIEWS FROM API
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch(
+               `${import.meta.env.VITE_API_URL}/api/reviews`
+        );
+
+        if (!res.ok) throw new Error("Failed to fetch reviews");
+
+        const data: Review[] = await res.json();
+
+        setReviews(data);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
+    fetchReviews();
+  }, []);
+
   const handleAvailabilityChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
 
@@ -54,10 +106,9 @@ export default function Home() {
     }
 
     setAvailabilityResult(
-      "Rooms are available for your selected dates. You can reserve now.",
+      "Rooms are available for your selected dates. You can reserve now."
     );
   };
-
   return (
     <>
       <header>
@@ -491,35 +542,13 @@ export default function Home() {
         </section>
 
         {/* Section 6 Testimonials */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-3">
-          {[
-            {
-              name: "Emily Thompson",
-              role: "Travel Blogger",
-              img: "/images/home/s6-person1.jpg",
-              title: "Amazing Experience!",
-              text: "The food was exquisite, and the hotel provided top-notch comfort. A must-visit for luxury relaxation.",
-            },
-            {
-              name: "Michael Rodriguez",
-              role: "Executive Chef",
-              img: "/images/home/s6-person2.jpg",
-              title: "Food and Comfort!",
-              text: "Outstanding food and cozy atmosphere. Truly the best place to stay and dine.",
-            },
-            {
-              name: "Sarah Collins",
-              role: "Food Critic",
-              img: "/images/home/s6-person3.jpg",
-              title: "Top-Notch Quality",
-              text: "Fantastic hotel experience with incredible food. Perfect for family and relaxation.",
-            },
-          ].map((t, i) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-3">
+          {reviews.map((r, i) => (
             <div
               key={i}
               className="relative bg-white shadow-sm p-7 hover:-translate-y-2 transition-all duration-300"
             >
-              {/* QUOTE ICON (light background style) */}
+              {/* QUOTE ICON */}
               <div className="text-primary-1/10 text-5xl font-serif absolute top-4 right-6">
                 “”
               </div>
@@ -527,27 +556,25 @@ export default function Home() {
               {/* USER */}
               <div className="flex items-center gap-4 mb-6">
                 <img
-                  src={t.img}
+                  src={getRandomAvatar(r.userId)}
                   className="w-14 h-14 rounded-full object-cover border-2 border-primary-1"
-                  alt={t.name}
+                  alt="user"
                 />
 
                 <div>
                   <h5 className="font-bold text-text-dark leading-tight">
-                    {t.name}
+                    Guest User #{r.userId}
                   </h5>
-                  <p className="text-sm text-accent">{t.role}</p>
+
+                  <p className="text-sm text-accent">
+                    {roomTypeMap[r.roomTypeId]}
+                  </p>
                 </div>
               </div>
 
-              {/* TITLE */}
-              <h4 className="font-serif text-lg font-bold text-primary-2 mb-3">
-                {t.title}
-              </h4>
-
-              {/* COMMENT (clean + readable) */}
+              {/* MESSAGE */}
               <p className="text-text-light text-sm leading-relaxed italic">
-                {t.text}
+                {r.message}
               </p>
             </div>
           ))}
