@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import {
@@ -17,126 +17,228 @@ import {
   Volume2,
   Coffee,
   CheckCircle2,
-  X,
 } from "lucide-react";
 
+const API_BASE = "https://api-hotel-booking.molika.app";
+
+type RoomType = {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  capacity: number;
+  image: string;
+};
+
+// 🌟 Added structural interface for matching Room instances
+type Room = {
+  id: number;
+  roomNumber: string; // e.g., "Room 101"
+  status?: string;
+  roomType?: {
+    id: number;
+    name: string;
+  };
+};
+
+const STATIC_ROOM_DATA: Record<
+  string,
+  {
+    category: string;
+    image1: string;
+    image2: string;
+    image3: string;
+    image4: string;
+    bed: string;
+    bath: string;
+    size: string;
+  }
+> = {
+  "Deluxe Room": {
+    category: "Luxury Room",
+    image1: "/images/home/rd1-img1.jpg",
+    image2: "/images/home/rd1-img2.jpg",
+    image3: "/images/home/rd1-img3.jpg",
+    image4: "/images/home/rd1-img4.jpg",
+    bed: "1 Bed",
+    bath: "1 Bath",
+    size: "300 sqft",
+  },
+  "Family room": {
+    category: "Family Suite",
+    image1: "/images/home/fr1.png",
+    image2: "/images/home/fr2.png",
+    image3: "/images/home/fr3.png",
+    image4: "/images/home/fr4.png",
+    bed: "2 Beds",
+    bath: "2 Baths",
+    size: "500 sqft",
+  },
+};
+
+const DEFAULT_STATIC = STATIC_ROOM_DATA["Deluxe Room"];
+
 export default function Reservation() {
+  const navigate = useNavigate();
+
+  // 🌟 Updated form keys to map strings and explicitly manage separated roomId selects
   const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
+    roomTypeName: "",
+    roomId: "",
     checkIn: "",
     checkOut: "",
-    adult: "",
-    roomType: "Standard Room",
+    adult: "1",
+    children: "0",
   });
 
-  const rooms = {
-    "Standard Room": {
-      title: "Standard Room",
-      category: "Luxury Room",
-      price: 150,
-      image1: "/images/home/rd1-img1.jpg",
-      image2: "/images/home/rd1-img2.jpg",
-      image3: "/images/home/rd1-img3.jpg",
-      image4: "/images/home/rd1-img4.jpg",
-      bed: "1 Bed",
-      bath: "1 Bath",
-      size: "300 sqft",
-      guests: "2 Guests",
-      overview:
-        "Enjoy a comfortable stay in our Standard Room, designed with modern amenities, elegant decor, and a relaxing atmosphere for couples or solo travelers.",
-    },
-    "Family Room": {
-      title: "Family Room",
-      category: "Family Suite",
-      price: 250,
-      image1: "/images/home/fr1.png",
-      image2: "/images/home/fr2.png",
-      image3: "/images/home/fr3.png",
-      image4: "/images/home/fr4.png",
-      bed: "2 Beds",
-      bath: "2 Baths",
-      size: "500 sqft",
-      guests: "4 Guests",
-      overview:
-        "Our Family Room is perfect for families or groups, offering more space, extra beds, and a comfortable environment for a relaxing stay together.",
-    },
-  };
+  const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]); // 🌟 New state for holding rooms filtering list
 
-  const selectedRoom =
-    rooms[formData.roomType as keyof typeof rooms] || rooms["Standard Room"];
+  const [roomTypesLoading, setRoomTypesLoading] = useState(true);
+  const [roomsLoading, setRoomsLoading] = useState(false); // 🌟 Loading indicator for secondary dropdown
+  const [roomTypesError, setRoomTypesError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const [dbRooms, setDbRooms] = useState<any[]>([]);
-
+  // Step 1: Fetch Room Categories on Component Mounting
   useEffect(() => {
-    const fetchRooms = async () => {
-      try {
-        const { roomService } = await import("../api/roomService");
-        const data = await roomService.getAllRooms();
-        setDbRooms(data);
-      } catch (err) {
-        console.error("Failed to fetch rooms:", err);
-      }
-    };
-    fetchRooms();
-  }, []);
-
-  const handleBookNow = async () => {
-    if (
-      !formData.name ||
-      !formData.phone ||
-      !formData.checkIn ||
-      !formData.checkOut ||
-      !formData.adult ||
-      !formData.roomType
-    ) {
-      alert("Please fill all booking information.");
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
       return;
     }
 
-    try {
-      const userStr = localStorage.getItem("user");
-      if (!userStr) {
-        alert("Please login to book a room.");
-        return;
-      }
-      const user = JSON.parse(userStr);
-      
-      const room = dbRooms.find((r) => r.roomType.name === formData.roomType);
-      const roomId = room?.id || 1; 
+    fetch(`${API_BASE}/api/roomType`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (res.status === 401 || res.status === 403) {
+          navigate("/login");
+          return null;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (!data) return;
+        const list: RoomType[] = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.content)
+            ? data.content
+            : [];
+        setRoomTypes(list);
 
-      const { reservationService } = await import("../api/reservationService");
+        if (list.length > 0) {
+          setFormData((prev) => ({
+            ...prev,
+            roomTypeName: list[0].name,
+          }));
+        } else {
+          setRoomTypesError(true);
+        }
+      })
+      .catch(() => setRoomTypesError(true))
+      .finally(() => setRoomTypesLoading(false));
+  }, [navigate]);
+
+  // 🌟 Step 2: Dependent Effect — Fetch matching rooms every single time category selection shifts
+  useEffect(() => {
+  if (!formData.roomTypeName) return;
+
+  const token = localStorage.getItem("accessToken");
+  setRoomsLoading(true);
+
+
+  fetch(`${API_BASE}/api/room`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((res) => res.json())
+    .then((allRooms: Room[]) => {
+      // 🌟 Update: Filter by roomType name AND ensure the status is active/available
+      const filtered = allRooms.filter(
+        (r) => 
+          r.roomType?.name === formData.roomTypeName && 
+          r.status?.toUpperCase() === "AVAILABLE" // 🔥 Change "AVAILABLE" to match your exact backend status string (e.g., "FREE", "VACANT")
+      );
       
-      const payload = {
-        checkinDate: new Date(formData.checkIn).toISOString(),
-        checkoutDate: new Date(formData.checkOut).toISOString(),
-        adultAmount: parseInt(formData.adult),
-        childAmount: 0,
-        status: "CONFIRMED",
-        roomId: roomId,
-        userId: user.id || 1 
-      };
-      
-      await reservationService.createReservation(payload);
-      alert("Reservation successfully created!");
-      window.location.href = "/profile";
-    } catch (error) {
-      console.error(error);
-      alert("Failed to create reservation. Please try again.");
-    }
+      setRooms(filtered);
+
+      // Auto-select the first available sub-room if entries exist
+      setFormData((prev) => ({
+        ...prev,
+        roomId: filtered.length > 0 ? String(filtered[0].id) : "",
+      }));
+    })
+    .catch((err) => console.error("Error filtering down sub-rooms:", err))
+    .finally(() => setRoomsLoading(false));
+}, [formData.roomTypeName]);
+
+  const selectedRoomType = roomTypes.find(
+    (r) => r.name === formData.roomTypeName,
+  );
+  const staticData = STATIC_ROOM_DATA[formData.roomTypeName] ?? DEFAULT_STATIC;
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
+  // Step 3: Post Booking Payload directly from state fields
+  const handleBookNow = async () => {
+    if (!formData.checkIn || !formData.checkOut || !formData.roomId) {
+      alert(
+        "Please fill all booking information and select an available room.",
+      );
+      return;
+    }
+
+    const userId = localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user") as string).id
+      : null;
+    const token = localStorage.getItem("accessToken");
+
+    if (!userId || !token) {
+      navigate("/login");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const payload = {
+        roomId: Number(formData.roomId),
+        userId: Number(userId),
+        checkinDate: `${formData.checkIn}T14:00:00.000+00:00`,
+        checkoutDate: `${formData.checkOut}T12:00:00.000+00:00`,
+        adultAmount: Number(formData.adult),
+        childAmount: Number(formData.children),
+      };
+
+      console.log("SUBMITTING RESERVATION PAYLOAD:", payload);
+
+      const res = await fetch(`${API_BASE}/api/reservation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok)
+        throw new Error(
+          "Booking failed. Please check room availability dates.",
+        );
+
+      navigate("/profile");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -151,47 +253,40 @@ export default function Reservation() {
             <h1 className="text-4xl lg:text-5xl font-serif mb-4 font-bold">
               Room Details
             </h1>
-
             <div className="flex items-center text-sm font-medium">
               <Link to="/" className="hover:text-accent transition-colors">
                 Home
               </Link>
-
               <span className="mx-3">|</span>
-
               <span className="text-accent">Room Details</span>
             </div>
           </div>
         </section>
 
+
         <section className="py-16 px-5 lg:px-15 max-w-7xl mx-auto">
           {/* Image Gallery */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-12">
-            {/* Main Image */}
             <div className="lg:col-span-3 overflow-hidden rounded-2xl group">
               <img
-                src={selectedRoom.image1}
-                alt={selectedRoom.title}
+                src={staticData.image1}
+                alt={formData.roomTypeName}
                 className="w-full h-[300px] lg:h-[500px] object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
-
-            {/* Side Images */}
             <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
               <img
-                src={selectedRoom.image2}
+                src={staticData.image2}
                 alt="Room Detail"
                 className="w-full h-[160px] lg:h-[156px] object-cover rounded-2xl hover:opacity-90 transition"
               />
-
               <img
-                src={selectedRoom.image3}
+                src={staticData.image3}
                 alt="Bathroom"
                 className="w-full h-[160px] lg:h-[156px] object-cover rounded-2xl hover:opacity-90 transition"
               />
-
               <img
-                src={selectedRoom.image4}
+                src={staticData.image4}
                 alt="Room View"
                 className="w-full h-[160px] lg:h-[156px] object-cover rounded-2xl hover:opacity-90 transition col-span-2 lg:col-span-1"
               />
@@ -206,18 +301,15 @@ export default function Reservation() {
                 <div className="flex flex-wrap items-center justify-between mb-4 gap-4">
                   <div className="flex items-center gap-4">
                     <h2 className="text-3xl font-serif font-bold text-primary-2">
-                      {selectedRoom.title}
+                      {formData.roomTypeName}
                     </h2>
-
                     <span className="bg-primary-1 text-white text-xs font-medium px-4 py-1.5 rounded-full hidden sm:block">
-                      {selectedRoom.category}
+                      {staticData.category}
                     </span>
                   </div>
-
                   <div className="flex items-center gap-2 text-text-dark font-medium">
                     <Star className="text-accent w-5 h-5" fill="currentColor" />
                     4.9
-
                     <span className="text-text-light font-normal">
                       (245 Review)
                     </span>
@@ -231,9 +323,8 @@ export default function Reservation() {
 
                 <div className="flex items-baseline gap-1 mb-8">
                   <span className="text-3xl font-serif font-bold text-primary-2">
-                    ${selectedRoom.price}
+                    ${selectedRoomType?.price ?? "—"}
                   </span>
-
                   <span className="text-text-light">/ night</span>
                 </div>
 
@@ -242,34 +333,31 @@ export default function Reservation() {
                 <div className="flex flex-wrap items-center gap-8 text-sm text-text-dark font-medium">
                   <div className="flex items-center gap-2">
                     <BedDouble className="w-5 h-5 text-accent" />
-                    {selectedRoom.bed}
+                    {staticData.bed}
                   </div>
-
                   <div className="flex items-center gap-2">
                     <Bath className="w-5 h-5 text-accent" />
-                    {selectedRoom.bath}
+                    {staticData.bath}
                   </div>
-
                   <div className="flex items-center gap-2">
                     <Maximize className="w-5 h-5 text-accent" />
-                    {selectedRoom.size}
+                    {staticData.size}
                   </div>
-
                   <div className="flex items-center gap-2">
                     <Users className="w-5 h-5 text-accent" />
-                    {selectedRoom.guests}
+                    {selectedRoomType?.capacity ?? "—"} Guests
                   </div>
                 </div>
               </div>
+
 
               {/* Overview */}
               <div className="mb-10">
                 <h3 className="text-2xl font-serif font-bold text-primary-2 mb-4">
                   Overview
                 </h3>
-
                 <p className="text-text-light leading-relaxed">
-                  {selectedRoom.overview}
+                  {selectedRoomType?.description}
                 </p>
               </div>
 
@@ -278,88 +366,30 @@ export default function Reservation() {
                 <h3 className="text-2xl font-serif font-bold text-primary-2 mb-4">
                   Room Amenities
                 </h3>
-
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-y-6 gap-x-4">
                   <div className="flex items-center gap-3 text-text-dark font-medium">
                     <Coffee className="text-gray-400 w-5 h-5" />
                     Air Conditioning
                   </div>
-
                   <div className="flex items-center gap-3 text-text-dark font-medium">
                     <Monitor className="text-gray-400 w-5 h-5" />
                     Flat-Screen TV
                   </div>
-
                   <div className="flex items-center gap-3 text-text-dark font-medium">
                     <Wifi className="text-gray-400 w-5 h-5" />
                     High-Speed Wi-Fi
                   </div>
-
                   <div className="flex items-center gap-3 text-text-dark font-medium">
                     <Shield className="text-gray-400 w-5 h-5" />
                     Electronic Safe
                   </div>
-
                   <div className="flex items-center gap-3 text-text-dark font-medium">
                     <Volume2 className="text-gray-400 w-5 h-5" />
                     Sound System
                   </div>
-
                   <div className="flex items-center gap-3 text-text-dark font-medium">
                     <Bath className="text-gray-400 w-5 h-5" />
                     Bathtub
-                  </div>
-                </div>
-              </div>
-
-              {/* Booking Rules */}
-              <div className="mb-10">
-                <h3 className="text-2xl font-serif font-bold text-primary-2 mb-6">
-                  Booking Rules
-                </h3>
-
-                <div className="flex flex-col md:flex-row gap-10">
-                  {/* Check In */}
-                  <div className="flex-1">
-                    <h4 className="font-bold text-text-dark mb-4">
-                      Check In
-                    </h4>
-
-                    <ul className="space-y-3">
-                      <li className="flex items-center gap-3 text-text-light">
-                        <CheckCircle2 className="w-4 h-4 text-accent" />
-                        From 14:00
-                      </li>
-
-                      <li className="flex items-center gap-3 text-text-light">
-                        <CheckCircle2 className="w-4 h-4 text-accent" />
-                        ID Required
-                      </li>
-
-                      <li className="flex items-center gap-3 text-text-light">
-                        <CheckCircle2 className="w-4 h-4 text-accent" />
-                        Credit Card Required
-                      </li>
-                    </ul>
-                  </div>
-
-                  {/* Check Out */}
-                  <div className="flex-1">
-                    <h4 className="font-bold text-text-dark mb-4">
-                      Check Out
-                    </h4>
-
-                    <ul className="space-y-3">
-                      <li className="flex items-center gap-3 text-text-light">
-                        <CheckCircle2 className="w-4 h-4 text-accent" />
-                        Until 12:00
-                      </li>
-
-                      <li className="flex items-center gap-3 text-text-light">
-                        <CheckCircle2 className="w-4 h-4 text-accent" />
-                        Late Check-out available
-                      </li>
-                    </ul>
                   </div>
                 </div>
               </div>
@@ -373,69 +403,138 @@ export default function Reservation() {
                 </h3>
 
                 <form className="space-y-5">
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Your Name"
-                    className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
-                  />
+                  {/* Category dropdown Selection */}
+                  <div>
+                    <label className="block text-xs font-medium text-text-light mb-1.5">
+                      Room Type Category
+                    </label>
+                    <select
+                      name="roomTypeName"
+                      value={formData.roomTypeName}
+                      onChange={handleChange}
+                      disabled={roomTypesLoading || roomTypesError}
+                      className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
+                    >
+                      {roomTypesLoading && (
+                        <option value="">Loading types...</option>
+                      )}
+                      {roomTypesError && (
+                        <option value="">Failed to load types</option>
+                      )}
+                      {!roomTypesLoading &&
+                        roomTypes.map((rt) => (
+                          <option key={rt.id} value={rt.name}>
+                            {rt.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
 
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="Phone Number"
-                    className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
-                  />
 
-                  <input
-                    type="date"
-                    name="checkIn"
-                    value={formData.checkIn}
-                    onChange={handleChange}
-                    className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
-                  />
+                  {/* 🌟 New Step 4: Specific Room Dropdown Menu selection input item */}
+                  <div>
+                    <label className="block text-xs font-medium text-text-light mb-1.5">
+                      Select Specific Room
+                    </label>
+                    <select
+                      name="roomId"
+                      value={formData.roomId}
+                      onChange={handleChange}
+                      disabled={roomsLoading || rooms.length === 0}
+                      className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50 disabled:opacity-60"
+                    >
+                      {roomsLoading && (
+                        <option value="">Loading available rooms...</option>
+                      )}
+                      {!roomsLoading && rooms.length === 0 && (
+                        <option value="">
+                          No rooms available for this type
+                        </option>
+                      )}
+                      {!roomsLoading &&
+                        rooms.map((room) => (
+                          <option key={room.id} value={String(room.id)}>
+                            Room #{room.roomNumber || room.id}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
 
-                  <input
-                    type="date"
-                    name="checkOut"
-                    value={formData.checkOut}
-                    onChange={handleChange}
-                    className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
-                  />
+                  <div>
+                    <label className="block text-xs font-medium text-text-light mb-1.5">
+                      Check-in Date
+                    </label>
+                    <input
+                      type="date"
+                      name="checkIn"
+                      value={formData.checkIn}
+                      onChange={handleChange}
+                      onClick={(e) => e.currentTarget.showPicker()}
+                      className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50 cursor-pointer"
+                    />
+                  </div>
 
-                  <select
-                    name="adult"
-                    value={formData.adult}
-                    onChange={handleChange}
-                    className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
-                  >
-                    <option value="">Adult</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4+">4+</option>
-                  </select>
+                  <div>
+                    <label className="block text-xs font-medium text-text-light mb-1.5">
+                      Check-out Date
+                    </label>
+                    <input
+                      type="date"
+                      name="checkOut"
+                      value={formData.checkOut}
+                      onChange={handleChange}
+                      onClick={(e) => e.currentTarget.showPicker()}
+                      className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50 cursor-pointer"
+                    />
+                  </div>
 
-                  <select
-                    name="roomType"
-                    value={formData.roomType}
-                    onChange={handleChange}
-                    className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
-                  >
-                    <option value="Standard Room">Standard Room</option>
-                    <option value="Family Room">Family Room</option>
-                  </select>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-text-light mb-1.5">
+                        Adults
+                      </label>
+                      <select
+                        name="adult"
+                        value={formData.adult}
+                        onChange={handleChange}
+                        className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
+                      >
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-text-light mb-1.5">
+                        Children
+                      </label>
+                      <select
+                        name="children"
+                        value={formData.children}
+                        onChange={handleChange}
+                        className="w-full p-3.5 border border-gray-200 rounded-lg text-sm bg-gray-50/50"
+                      >
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {error && (
+                    <p className="text-red-500 text-sm text-center">{error}</p>
+                  )}
 
                   <button
                     type="button"
                     onClick={handleBookNow}
-                    className="w-full mt-4 bg-primary-1 text-white py-4 rounded-xl text-base font-bold hover:bg-primary-2 transition"
+                    disabled={loading || !formData.roomId}
+                    className="w-full mt-4 bg-primary-1 text-white py-4 rounded-xl text-base font-bold hover:bg-primary-2 transition disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    Book Now
+                    {loading ? "Booking..." : "Book Now"}
                   </button>
                 </form>
               </div>
