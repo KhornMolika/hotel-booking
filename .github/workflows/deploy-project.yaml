@@ -51,4 +51,4 @@ jobs:
             sed -i "s|REPOSITORY/IMAGE_NAME:TAG|$IMAGE_NAME|g" /tmp/react-frontend/k8s/deployment.yaml
             
             # Apply to Kubernetes cluster
-            sudo kubectl apply -f /tmp/react-frontend/k8s/deployment.yaml
+            sudo /usr/local/bin/kubectl apply -f /tmp/react-frontend/k8s/deployment.yaml

@@ -19,6 +19,7 @@ export const authService = {
       setInMemoryToken(response.data.accessToken);
       if (typeof window !== "undefined") {
         localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
       }
     }
@@ -39,6 +40,7 @@ export const authService = {
 
       if (typeof window !== "undefined") {
         localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
       }
     }
@@ -81,6 +83,7 @@ export const authService = {
       setInMemoryToken(response.data.accessToken);
       if (typeof window !== "undefined") {
         localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
       }
     }
