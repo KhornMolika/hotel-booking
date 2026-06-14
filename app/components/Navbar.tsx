@@ -47,7 +47,7 @@ export function Navbar() {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [location.pathname]);
 
   const isActive = (path: string) => location.pathname === path;
 

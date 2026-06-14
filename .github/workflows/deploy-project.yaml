@@ -47,6 +47,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -e
             IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/hotel-booking:latest
             
             # Replace placeholder with actual image name
