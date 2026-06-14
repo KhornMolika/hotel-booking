@@ -6,20 +6,11 @@ import { Star, BedDouble, Bath, Maximize } from "lucide-react";
 import { ImageSkeleton } from "../components/ImageSkeleton";
 
 export default function Rooms() {
-  const [selectedCategory, setSelectedCategory] = useState("All Rooms");
-
   const features = [
     "Breakfast Included",
     "Swimming Pool",
     "High Speed Wifi",
     "Spa & Wellness",
-  ];
-
-  const categories = [
-    "All Rooms",
-    "Luxury Rooms",
-    "Family Rooms",
-    "Standard Rooms",
   ];
 
   const [rooms, setRooms] = useState<any[]>([]);
@@ -51,11 +42,6 @@ export default function Rooms() {
     fetchRooms();
   }, []);
 
-  const filteredRooms =
-    selectedCategory === "All Rooms"
-      ? rooms
-      : rooms.filter((room) => room.category === selectedCategory);
-
   const RoomCard = ({
     img,
     tag,
@@ -66,8 +52,9 @@ export default function Rooms() {
     baths,
     sqft,
   }: any) => (
-    <div
-      className="bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2"
+    <Link
+      to="/reservation"
+      className="block bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-2"
       data-aos="fade"
       data-aos-duration="500"
     >
@@ -114,7 +101,7 @@ export default function Rooms() {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 
   return (
@@ -161,26 +148,9 @@ export default function Rooms() {
             </h1>
           </div>
 
-          {/* Category Buttons */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                  selectedCategory === category
-                    ? "bg-primary-1 text-white shadow-md"
-                    : "bg-white text-primary-2 border border-gray-200 hover:bg-primary-1 hover:text-white"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
           {/* Room Cards */}
-          <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredRooms.map((room, index) => (
+          <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+            {rooms.map((room, index) => (
               <RoomCard
                 key={index}
                 img={room.img}
