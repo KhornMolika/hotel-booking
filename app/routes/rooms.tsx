@@ -29,21 +29,21 @@ export default function Rooms() {
     const fetchRooms = async () => {
       try {
         const { roomService } = await import("../api/roomService");
-        const data = await roomService.getAllRooms();
-        const mappedRooms = data.map((room) => ({
-          img: room.roomType?.image || "/images/home/s3-image1.jpg",
-          category: room.roomType?.name || "Standard Rooms",
-          tag: room.roomType?.name || "Standard Room",
-          price: room.roomType?.price?.toString() || "150",
+        const data = await roomService.getAllRoomTypes();
+        const mappedRooms = data.map((roomType) => ({
+          img: roomType.image || "/images/home/s3-image1.jpg",
+          category: roomType.name || "Standard Rooms",
+          tag: roomType.name || "Standard Room",
+          price: roomType.price?.toString() || "150",
           rating: "4.9",
-          title: room.roomType?.name || "Room",
-          beds: room.roomType?.capacity?.toString() || "1",
+          title: roomType.name || "Room",
+          beds: roomType.capacity?.toString() || "1",
           baths: "1",
           sqft: "300",
         }));
         setRooms(mappedRooms);
       } catch (error) {
-        console.error("Failed to fetch rooms:", error);
+        console.error("Failed to fetch room types:", error);
       } finally {
         setLoading(false);
       }

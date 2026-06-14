@@ -1,5 +1,5 @@
 import { axiosPublic } from "./client";
-import type { RoomResponse } from "./types";
+import type { RoomResponse, RoomTypeResponse } from "./types";
 
 export const roomService = {
   getAllRooms: async (): Promise<RoomResponse[]> => {
@@ -8,6 +8,16 @@ export const roomService = {
       return response.data;
     } catch (error) {
       console.error("Failed to fetch rooms:", error);
+      throw error;
+    }
+  },
+
+  getAllRoomTypes: async (): Promise<RoomTypeResponse[]> => {
+    try {
+      const response = await axiosPublic.get<RoomTypeResponse[]>("/api/roomType");
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch room types:", error);
       throw error;
     }
   },
