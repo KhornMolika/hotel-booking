@@ -23,7 +23,7 @@ jobs:
 
       - name: Build Image
         run: |
-          echo "VITE_API_BASE_URL=https://api-hotel-booking.molika.app/" >> .env
+          echo "VITE_API_BASE_URL=https://api-hotel-booking.molika.app" >> .env
           echo "VITE_GOOGLE_CLIENT_ID=1018086564042-ub44p6cuuej3oqe0cg18jl6r4o0kneqe.apps.googleusercontent.com" >> .env
           docker build -t $IMAGE_NAME:latest .
 
