@@ -7,4 +7,18 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
+  server: {
+    proxy: {
+      "/.well-known": {
+        target: "http://localhost:5173", 
+        bypass: (req, res) => {
+          if (res) {
+            res.statusCode = 404;
+            res.end("Not found");
+          }
+          return;
+        },
+      },
+    },
+  },
 });
