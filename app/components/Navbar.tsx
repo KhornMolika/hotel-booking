@@ -19,6 +19,7 @@ import youtubeLogo from "../../public/images/logo/youtube-logo.svg";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const { theme, setTheme } = useTheme();
 
@@ -36,6 +37,9 @@ export function Navbar() {
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsLoggedIn(!!localStorage.getItem("user"));
+    }
     const handleResize = () => {
       if (window.innerWidth > 1024) {
         setIsOpen(false);
@@ -194,7 +198,7 @@ export function Navbar() {
 
         <div className="hidden lg:flex items-center gap-3">
           <Link
-            to="/login"
+            to={isLoggedIn ? "/profile" : "/login"}
             className="flex h-11 w-11 items-center justify-center rounded-full border border-primary-1 text-primary-1 transition hover:bg-primary-1 hover:text-white"
             aria-label="Profile"
           >
@@ -262,8 +266,8 @@ export function Navbar() {
           </li>
           <li>
             <Link
-              to="/login"
-              className={getLinkClasses("/login", "text-base")}
+              to={isLoggedIn ? "/profile" : "/login"}
+              className={getLinkClasses(isLoggedIn ? "/profile" : "/login", "text-base")}
               onClick={toggleMenu}
             >
               Profile
