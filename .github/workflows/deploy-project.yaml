@@ -23,6 +23,8 @@ jobs:
 
       - name: Build Image
         run: |
+          echo "VITE_API_BASE_URL=https://api-hotel-booking.molika.app/" >> .env
+          echo "VITE_GOOGLE_CLIENT_ID=1018086564042-ub44p6cuuej3oqe0cg18jl6r4o0kneqe.apps.googleusercontent.com" >> .env
           docker build -t $IMAGE_NAME:latest .
 
       - name: Push Image
@@ -35,7 +37,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "k8s/deployment.yaml"
+          source: "k8s"
           target: "/tmp/react-frontend"
 
       - name: Deploy Server
@@ -50,5 +52,15 @@ jobs:
             # Replace placeholder with actual image name
             sed -i "s|REPOSITORY/IMAGE_NAME:TAG|$IMAGE_NAME|g" /tmp/react-frontend/k8s/deployment.yaml
             
+            # Create Kubernetes Secret for Docker Hub so it can pull your private image
+            export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+            kubectl create secret docker-registry regcred \
+              --docker-server=https://index.docker.io/v1/ \
+              --docker-username=${{ secrets.DOCKERHUB_USERNAME }} \
+              --docker-password=${{ secrets.DOCKERHUB_TOKEN }} \
+              --docker-email=devops@example.com \
+              -n hotel-booking \
+              --dry-run=client -o yaml | kubectl apply -f -
+              
             # Apply to Kubernetes cluster
-            sudo /usr/local/bin/kubectl apply -f /tmp/react-frontend/k8s/deployment.yaml
+            /usr/local/bin/kubectl apply -f /tmp/react-frontend/k8s/

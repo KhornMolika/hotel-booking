@@ -189,7 +189,7 @@ export default function Home() {
                 <SwiperSlide>
                   <ImageSkeleton
                     src="/images/home/s3-image1.jpg"
-                    className="w-full h-[480px] object-cover"
+                    className="w-full h-h-120 object-cover"
                   />
                 </SwiperSlide>
 
