@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Save, X } from "lucide-react";
-import Logout from "./logout";
 
 interface UserInfo {
   username: string;
@@ -177,7 +176,6 @@ export default function PersonalInfo() {
             </button>
           </div>
         )}
-        <Logout />
       </div>
     </>
   );
