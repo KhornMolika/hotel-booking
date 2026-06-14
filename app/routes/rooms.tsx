@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -22,118 +22,34 @@ export default function Rooms() {
     "Standard Rooms",
   ];
 
-  const rooms = [
-    {
-      img: "/images/home/s3-image1.jpg",
-      category: "Standard Rooms",
-      tag: "Standard Room",
-      price: "150",
-      rating: "4.9",
-      title: "Standard Rooms",
-      beds: "1",
-      baths: "1",
-      sqft: "300",
-    },
-    {
-      img: "/images/home/s3-image2.jpg",
-      category: "Luxury Rooms",
-      tag: "Luxury Room",
-      price: "250",
-      rating: "5.0",
-      title: "Deluxe Rooms",
-      beds: "1",
-      baths: "2",
-      sqft: "400",
-    },
-    {
-      img: "/images/home/fr5.png",
-      category: "Family Rooms",
-      tag: "Family Room",
-      price: "350",
-      rating: "4.9",
-      title: "Family Room",
-      beds: "3",
-      baths: "2",
-      sqft: "650",
-    },
-    {
-      img: "/images/home/s3-image4.jpg",
-      category: "Standard Rooms",
-      tag: "Standard Room",
-      price: "450",
-      rating: "4.9",
-      title: "The Pearl Room",
-      beds: "2",
-      baths: "2",
-      sqft: "700",
-    },
-    {
-      img: "/images/home/s3-image5.jpg",
-      category: "Standard Rooms",
-      tag: "Standard Room",
-      price: "550",
-      rating: "4.9",
-      title: "Golden Horizon Room",
-      beds: "3",
-      baths: "3",
-      sqft: "800",
-    },
-    {
-      img: "/images/home/s3-image1.jpg",
-      category: "Luxury Rooms",
-      tag: "Luxury Room",
-      price: "300",
-      rating: "5.0",
-      title: "The Haven Room",
-      beds: "2",
-      baths: "2",
-      sqft: "750",
-    },
-    {
-      img: "/images/home/s3-image2.jpg",
-      category: "Luxury Rooms",
-      tag: "Luxury Room",
-      price: "450",
-      rating: "5.0",
-      title: "The Executive Deluxe",
-      beds: "4",
-      baths: "3",
-      sqft: "950",
-    },
-    {
-      img: "/images/home/s3-image3.jpg",
-      category: "Luxury Rooms",
-      tag: "Luxury Room",
-      price: "550",
-      rating: "5.0",
-      title: "The Prestige Room",
-      beds: "5",
-      baths: "4",
-      sqft: "1200",
-    },
-    {
-      img: "/images/home/s3-image4.jpg",
-      category: "Standard Rooms",
-      tag: "Standard Room",
-      price: "600",
-      rating: "5.0",
-      title: "Royal Room",
-      beds: "4",
-      baths: "3",
-      sqft: "825",
-    },
-    {
-      img: "/images/home/fr1.png",
-      category: "Family Rooms",
-      tag: "Family Room",
-      price: "750",
-      rating: "5.0",
-      title: "Family Suites",
-      beds: "5",
-      baths: "4",
-      sqft: "950",
-    },
-  ];
+  const [rooms, setRooms] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const { roomService } = await import("../api/roomService");
+        const data = await roomService.getAllRooms();
+        const mappedRooms = data.map((room) => ({
+          img: room.roomType?.image || "/images/home/s3-image1.jpg",
+          category: room.roomType?.name || "Standard Rooms",
+          tag: room.roomType?.name || "Standard Room",
+          price: room.roomType?.price?.toString() || "150",
+          rating: "4.9",
+          title: room.roomType?.name || "Room",
+          beds: room.roomType?.capacity?.toString() || "1",
+          baths: "1",
+          sqft: "300",
+        }));
+        setRooms(mappedRooms);
+      } catch (error) {
+        console.error("Failed to fetch rooms:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRooms();
+  }, []);
 
   const filteredRooms =
     selectedCategory === "All Rooms"

@@ -64,3 +64,4 @@ jobs:
               
             # Apply to Kubernetes cluster
             /usr/local/bin/kubectl apply -f /tmp/react-frontend/k8s/
+            /usr/local/bin/kubectl rollout restart deployment react-frontend -n hotel-booking

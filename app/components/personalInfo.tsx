@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Save, X } from "lucide-react";
 import Logout from "./logout";
 
@@ -13,13 +13,29 @@ interface UserInfo {
 export default function PersonalInfo() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    username: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
+    username: "",
+    email: "",
+    phone: "",
   });
 
   const [formData, setFormData] = useState<UserInfo>(userInfo);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      setUserId(user.id);
+      const data = {
+        username: user.username || "",
+        email: user.email || "",
+        phone: user.phoneNumber || "",
+      };
+      setUserInfo(data);
+      setFormData(data);
+    }
+  }, []);
 
   const handleInputChange = (field: keyof UserInfo, value: string) => {
     setFormData((prev) => ({
@@ -29,12 +45,38 @@ export default function PersonalInfo() {
   };
 
   const handleSave = async () => {
+    if (!userId) return;
     setIsSaving(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setUserInfo(formData);
-    setIsEditing(false);
-    setIsSaving(false);
+    try {
+      const { userService } = await import("../api/userService");
+      const res = await userService.updateUser(userId, {
+        username: formData.username,
+        phoneNumber: formData.phone,
+        authProvider: "LOCAL" // Presume local for simplicity
+      });
+      
+      const updatedUser = {
+        username: res.username,
+        email: res.email,
+        phone: res.phoneNumber || formData.phone,
+      };
+      
+      setUserInfo(updatedUser);
+      setFormData(updatedUser);
+      setIsEditing(false);
+      
+      // Update local storage user object
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        localStorage.setItem("user", JSON.stringify({ ...user, ...res }));
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update profile.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCancel = () => {

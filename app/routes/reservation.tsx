@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -77,7 +77,22 @@ export default function Reservation() {
     });
   };
 
-  const handleBookNow = () => {
+  const [dbRooms, setDbRooms] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const { roomService } = await import("../api/roomService");
+        const data = await roomService.getAllRooms();
+        setDbRooms(data);
+      } catch (err) {
+        console.error("Failed to fetch rooms:", err);
+      }
+    };
+    fetchRooms();
+  }, []);
+
+  const handleBookNow = async () => {
     if (
       !formData.name ||
       !formData.phone ||
@@ -88,6 +103,37 @@ export default function Reservation() {
     ) {
       alert("Please fill all booking information.");
       return;
+    }
+
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) {
+        alert("Please login to book a room.");
+        return;
+      }
+      const user = JSON.parse(userStr);
+      
+      const room = dbRooms.find((r) => r.roomType.name === formData.roomType);
+      const roomId = room?.id || 1; 
+
+      const { reservationService } = await import("../api/reservationService");
+      
+      const payload = {
+        checkinDate: new Date(formData.checkIn).toISOString(),
+        checkoutDate: new Date(formData.checkOut).toISOString(),
+        adultAmount: parseInt(formData.adult),
+        childAmount: 0,
+        status: "CONFIRMED",
+        roomId: roomId,
+        userId: user.id || 1 
+      };
+      
+      await reservationService.createReservation(payload);
+      alert("Reservation successfully created!");
+      window.location.href = "/profile";
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create reservation. Please try again.");
     }
   };
 
