@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig, AxiosError } from 'axios';
 import type { RefreshResponse } from './types';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string)?.replace(/\/$/, "");
 
 console.log("Your Backend URL is:", import.meta.env.VITE_API_BASE_URL);
 
